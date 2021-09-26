@@ -1,4 +1,5 @@
 # cs107-FinalProject (Group 16)
+[![Build Status](https://app.travis-ci.com/cs107-sweet-16/cs107-FinalProject.svg?token=zpQuHJuMvMYnq6JxSWdy&branch=main)](https://app.travis-ci.com/cs107-sweet-16/cs107-FinalProject)
 
 Team members:
 Bhawesh	Kumar	bhawesh_kumar@hsph.harvard.edu
