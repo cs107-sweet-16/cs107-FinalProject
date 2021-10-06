@@ -1,4 +1,5 @@
 steps:
+  on: [push]
   # (Other steps go here)
   - name: "Upload coverage to Codecov"
     uses: codecov/codecov-action@v2
