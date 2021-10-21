@@ -10,7 +10,7 @@ expressions are difficult to obtain, one traditional option to calculate its
 derivative is finite-difference method, but may have issues such as
 floating point errors. Automatic differentiation (AD) refers to a general way
 of computing the derivatives of functions expressed as computation graphs, with
-which the evaluation of derivatives could reach machine precision. Our XXX
+which the evaluation of derivatives could reach machine precision. Our `autodiff`
 package provides tools to calculate the derivative of any function with an
 analytic expression based on the AD technique. 
 
@@ -30,9 +30,9 @@ only elementary operations are carried out between intermediate variables.
 
 Therefore, we follow the computational graph to evaluate the function value at
 a certain point. To evaluate the derivative of a function at a certain point,
-we make use of chain rule: the derivative of the composition $h = f(g(\dot))$
-of two differentiable functions $f$ and $g$ is $$ h' = f'(g(\dot))\dot
-g'(\dot)$$ which ensures that the derivative with respect to independent
+we make use of chain rule: the derivative of the composition h = f(g(•))
+of two differentiable functions f and g is h' = f'(g(•))×
+g'(•) which ensures that the derivative with respect to independent
 variables of a node in the computational graph is the multiplication of the
 derivative of the previous node with respect to the independent variables and
 the derivative of the current node with respect to the previous node. As a
