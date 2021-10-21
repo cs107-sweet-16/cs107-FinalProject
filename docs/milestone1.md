@@ -42,13 +42,13 @@ needed in the evaluation process.
 
 ## How to Use 
 ```py
-from autodiff import gradient, forward, reverse
+from autodiff import gradient
 from autodiff.operators import symbol
 x = symbol()
 f = x ** 2 
-grad_f = gradient(f)
-forward_f = forward(f)
-reverse_f = reverse(f)
+grad_f = gradient(f) # this computes the gradient of f, not yet evaluated at a particular value
+grad_f(2) # this would evaluate the gradient of f at the value, so would return 4
+
 ```
 ## Software Organization
 
