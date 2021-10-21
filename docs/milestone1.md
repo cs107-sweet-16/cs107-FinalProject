@@ -41,7 +41,15 @@ based on the flow of the computational graph, and no asymptotic assumptions are
 needed in the evaluation process.
 
 ## How to Use 
-
+```py
+from autodiff import gradient, forward, reverse
+from autodiff.operators import symbol
+x = symbol()
+f = x ** 2 
+grad_f = gradient(f)
+forward_f = forward(f)
+reverse_f = reverse(f)
+```
 ## Software Organization
 
 ### Directory Structure
