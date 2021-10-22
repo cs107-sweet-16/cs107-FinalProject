@@ -43,7 +43,7 @@ needed in the evaluation process.
 ## How to Use 
 ```py
 from autodiff import gradient
-from autodiff.operators import symbol
+from autodiff.primitives import symbol
 x = symbol()
 f = x ** 2 
 grad_f = gradient(f) # this computes the gradient of f, not yet evaluated at a particular value
@@ -67,14 +67,9 @@ module will provide us with the basic functionality of being able to
 differentiate on a defined set of elementary operations.  To help define the
 scope of our project, we will determine ahead of time which elementary
 functions can be used to integrate with our library. In order to accomplish
-this, we will create a second module, `primitives`, which houses the following
-elementary operations:
-1. `sin`
-2. `cos`
-3. `pow`
-4.  `exp`
-5. `log`
-
+this, we will create a second module, `primitives`, which houses some of the
+elementary operations we define in the implementation section, as well as the 
+symbol class.
 
 ### Test Suite
 
@@ -84,8 +79,8 @@ introduce regressions in our code when we change or add functionality. CodeCov
 will be used to ensure that any new code that we write is properly tested and
 accounted for.
     
-### Distribution We will use PyPI to distribute our package.
-   
+### Distribution 
+We will use PyPI to distribute our package.   
 We will use a library called `twine` to help us package and distribute our
 package over PyPI. We will follow this helpful tutorial
 https://packaging.python.org/tutorials/packaging-projects/, provides a detailed
@@ -95,15 +90,20 @@ step, we will elect to forgo a framework.
 
 ## Implementation 
 We will have a few core data structures:
-* Bidirectional computation graph: This data structure will be used to construct a computational
-graph. It should consist of nodes and edges where nodes consist of constants
-and variable types and edges consist of operations. 
-* Tuple for storing data in
-nodes within the computational graphs 
-* Numpy arrays and lists for input values,
-output values, and conducting operations 
+* Computational graph
 * Custom classes for instantiating dual
 numbers and performing forward and backward passes.
+
+### Computational Graph
+The computational graph will consist of node and edge data structures. 
+The graph is bidirectional since we plan to implement both the backward pass and forward pass 
+implementations.
+The nodes will store data in tuples.
+
+### Symbol Class 
+The symbol class is a user-facing data structure which represents 
+an abstraction of a variable. It will use dual numbers under the hood
+that run on the computational graph.
 
 ### Dual Number Class 
 We will begin by constructing a dualNumber() class that
@@ -122,37 +122,25 @@ class dualNumber():
   def __div__(self, other):
 ```
 
-### Forward Pass Class
-The forwardPass() class will initially be capable of completing a simple
-forward pass of the input function. It will take in a function, input the dual
-numbers and output the resulting value and respective gradients.  
+### Primitives
+We will have a module that is dedicated to housing elementary operations. 
+We will maintain an updated list of these operations:
+1. `sin`
+2. `cos`
+3. `pow`
+4.  `exp`
+5. `log`
 
-However, as we continue to develop this project we plan on writing a more complete
-forwardPass() function that utilizes a graph class to construct a computational
-graph. This will allow our forwardPass class to produce a more granular output
-of the function, including gradients at each respective node.  
-```py
-class forwardPass(): 
-  def __init__(self, f_x): 
-    self.f_x = f_x Y = f_x(dual_numers : np.array) 
-    return Y 
-```
-As we further develop the forwardPass class, we will
-introduce class attributes to call the graph class and compute the
-computational graph and to access user-defined gradients and values.
+### Forward Pass 
+The exact details of the forward pass algorithm are currently abstracted,
+but we desire to implement a forward mode function which can take in a function,
+and utilize dual numbers and computational graph
+to compute the resulting value and respective gradients.
 
-### Reverse Pass Class 
-Our reversePass class will implement the backpropagation
-step utilizing the results from our forwardPass class. The forwardPass class
-must be implemented first in order to use the reversePass, which is dependent
-on the computation graph and loss calculated from the forwardPass. It will use
-the gradients for the function calculated in the forward pass to compute the
-derivatives in the backpropagation steps.  
-```py
-class reversePass(): 
-  def__init__(self, f_x): 
-    self.f_x = f_x
-```
+### Reverse Pass
+The exact details of the reverse pass algorithm are currently abstracted,
+but we desire to implement a reverse mode function which will implement
+the backpropagation step, utilizing the saved results from our forward pass.
 
 ## License
 We will use the MIT License for our project because we are intending
