@@ -21,15 +21,26 @@ AD mainly makes use of two properties of closed-form functions:
 elementary functions, and the analytical expressions of the derivatives of
 elementary functions are already-known.
 2. Derivative rules including sum rule, product rule, quotient rule and most importantly, the chain rule.  
+- sum rule: (f+g)' = f'+g'
+- product rule: (f*g)' = f'g+g'f*g
+- quotient rule: (f/g)' = (f'g-g'f)/(g×g)
+- chain rule: h = f(g(•)), then h' = f'(g(•))× g'(•)
 
 To evaluate the value of a complex function expression, we need to start with
 independent variables and evaluate a series of intermediate results and finally
 reach the final result. The idea of AD is to use a computational graph to
 represent the function where each node represents an intermediate variable and
-only elementary operations are carried out between intermediate variables.
+only elementary operations are carried out between intermediate variables. Because we
+utilize the operation rules of derivatives mentioned above, the derivative at any 
+node in the computation graph can only rely on its parent node(s). As a result, we 
+obtain the final derivative result by computing derivatives and repeatedly utilizing 
+derivative rules following the flow of the computation graph. 
 
-Therefore, we follow the computational graph to evaluate the function value at
-a certain point. To evaluate the derivative of a function at a certain point,
+Here we give an brief example to illustrate how we calculate 
+
+%%%Therefore, we follow the computational graph to evaluate the function value at
+any certain node. 
+To evaluate the derivative of a function at a certain point,
 we make use of chain rule: the derivative of the composition h = f(g(•))
 of two differentiable functions f and g is h' = f'(g(•))×
 g'(•) which ensures that the derivative with respect to independent
@@ -38,7 +49,7 @@ derivative of the previous node with respect to the independent variables and
 the derivative of the current node with respect to the previous node. As a
 result, the derivative of the function can also be calculated automatically
 based on the flow of the computational graph, and no asymptotic assumptions are
-needed in the evaluation process.
+needed in the evaluation process.%%%
 
 ## How to Use 
 ```py
