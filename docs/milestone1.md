@@ -39,13 +39,8 @@ derivative rules following the flow of the computation graph.
 Here we give a brief example to illustrate how we calculate derivatives 
 based on compution graph. If we want to evaluate the derivative with respect 
 to x1 at x1=pi/2 for function f=sin(cos(x1)), here is our computation graph
-```mermaid
-graph LR
-A((x1)) --> B((v0))
-B --cos--> C((v1))
-C --sin--> D((f))
 
-```
+![comp graph](fig1.png)
 
 Then we follow the graph and evaluate step by step:
 |step| trace | Elementary function |Current value | Elementary function derivative| $\nabla_x$ value|
