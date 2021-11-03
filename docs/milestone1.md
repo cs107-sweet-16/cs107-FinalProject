@@ -160,3 +160,9 @@ to publish the project on github as open-source. MIT License allows for
 commercial and private use, while protecting us against liability and warranty.
 Furthermore, MIT License is BSD compatible, which is the license used by Numpy,
 so we do not need to call any other license.
+
+# Feedback
+Background: Introduction: great Introduction, I like the way you bring AD. Good background, we would expect more technical explanations (-0.5).
+We will add the formulas of derivative rules.
+We will add a computational graph and table to illustrate how AD work based on computation graph more clearly.
+
