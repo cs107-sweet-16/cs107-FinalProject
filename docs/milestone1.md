@@ -55,11 +55,22 @@ Note that when we calculate "elementary function derivative", we made use of the
 ## How to Use 
 ```py
 from autodiff import gradient
-from autodiff.primitives import symbol
+from autodiff.primitives import symbol, sin
+import numpy as np
 x = symbol()
+y = symbol()
 f = x ** 2 
-grad_f = gradient(f) # this computes the gradient of f, not yet evaluated at a particular value
-grad_f(2) # this would evaluate the gradient of f at the value, so would return 4
+grad = gradient(f) # this computes the gradient of f, not yet evaluated at a particular value
+grad.forward(2) # this would evaluate the gradient of f at the value, so would return 4
+
+f = sin(x)
+grad = gradient(f) # this computes the gradient of sin(x)
+grad.forward(np.pi) # this would evaluate the gradient of f at pi, so would return -1.
+
+f = x + y
+grad = gradient(f)
+grad.forward(1) # this evaluates the gradient of f with respect to each variable, so would return [1,1] 
+grad.reverse(1) # this also evaluates the gradient of f with respect to each variable, so would return [1,1] 
 
 ```
 ## Software Organization
@@ -162,9 +173,13 @@ Furthermore, MIT License is BSD compatible, which is the license used by Numpy,
 so we do not need to call any other license.
 
 # Feedback
-Background: Introduction: great Introduction, I like the way you bring AD. Good background, we would expect more technical explanations (-0.5).
+1. Background: Introduction: great Introduction, I like the way you bring AD. Good background, we would expect more technical explanations (-0.5).
+Response:
+* We will add the formulas of derivative rules.
+* We will add a computational graph and table to illustrate how AD work based on computation graph more clearly.
 
-We will add the formulas of derivative rules.
-
-We will add a computational graph and table to illustrate how AD work based on computation graph more clearly.
+2. How to use: Very clear, for the next milestone, try to think through more detailed use cases in order to apprehend everything.
+Response: We will add a couple more use cases to demonstrate the different features of our autodiff library.
+* We will add an example on using the elementary operators (for example, f = sin (x)), and demonstrate how to compute the forward mode result;
+* We will add an example on using the backward mode
 
