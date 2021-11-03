@@ -21,24 +21,36 @@ AD mainly makes use of two properties of closed-form functions:
 elementary functions, and the analytical expressions of the derivatives of
 elementary functions are already-known.
 2. Derivative rules including sum rule, product rule, quotient rule and most importantly, the chain rule.  
+- sum rule: (f+g)' = f'+g'
+- product rule: (f*g)' = f'g+g'f*g
+- quotient rule: (f/g)' = (f'g-g'f)/(g×g)
+- chain rule: h = f(g(•)), then h' = f'(g(•))× g'(•)
 
-To evaluate the value of a complex function expression, we need to start with
+To evaluate the value of a complicated function expression, we need to start with
 independent variables and evaluate a series of intermediate results and finally
 reach the final result. The idea of AD is to use a computational graph to
 represent the function where each node represents an intermediate variable and
-only elementary operations are carried out between intermediate variables.
+only elementary operations are carried out between intermediate variables. Because we
+utilize the operation rules of derivatives mentioned above, the derivative at any 
+node in the computation graph can only rely on its parent node(s). As a result, we 
+obtain the final derivative result by computing derivatives and repeatedly utilizing 
+derivative rules following the flow of the computation graph. 
 
-Therefore, we follow the computational graph to evaluate the function value at
-a certain point. To evaluate the derivative of a function at a certain point,
-we make use of chain rule: the derivative of the composition h = f(g(•))
-of two differentiable functions f and g is h' = f'(g(•))×
-g'(•) which ensures that the derivative with respect to independent
-variables of a node in the computational graph is the multiplication of the
-derivative of the previous node with respect to the independent variables and
-the derivative of the current node with respect to the previous node. As a
-result, the derivative of the function can also be calculated automatically
-based on the flow of the computational graph, and no asymptotic assumptions are
-needed in the evaluation process.
+Here we give a brief example to illustrate how we calculate derivatives 
+based on compution graph. If we want to evaluate the derivative with respect 
+to x1 at x1=pi/2 for function f=sin(cos(x1)), here is our computation graph
+
+![comp graph](fig1.png)
+
+Then we follow the graph and evaluate step by step:
+|step| trace | Elementary function |Current value | Elementary function derivative| $\nabla_x$ value|
+|--|--|--|--|-- |--|
+|1|v0|x|pi/2|$\dot x$|1|
+|2|v1|cos(v0)|0|$-sin(v_0)\dot v_0$|0|
+|3|f|sin(v1)|0|$cos(v_1)\dot v_1$|0|
+
+Note that when we calculate "elementary function derivative", we made use of the chain rule. 
+
 
 ## How to Use 
 ```py
@@ -160,12 +172,14 @@ commercial and private use, while protecting us against liability and warranty.
 Furthermore, MIT License is BSD compatible, which is the license used by Numpy,
 so we do not need to call any other license.
 
-
 # Feedback
-2. How to use: Very clear, for the next milestone, try to think through more detailed use cases in order to apprehend everything.
+1. Background: Introduction: great Introduction, I like the way you bring AD. Good background, we would expect more technical explanations (-0.5).
+Response:
+* We will add the formulas of derivative rules.
+* We will add a computational graph and table to illustrate how AD work based on computation graph more clearly.
 
-We will add a couple more use cases to demonstrate the different features of our autodiff library.
+2. How to use: Very clear, for the next milestone, try to think through more detailed use cases in order to apprehend everything.
+Response: We will add a couple more use cases to demonstrate the different features of our autodiff library.
 * We will add an example on using the elementary operators (for example, f = sin (x)), and demonstrate how to compute the forward mode result;
 * We will add an example on using the backward mode
-
 
