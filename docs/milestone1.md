@@ -53,6 +53,7 @@ Then we follow the graph and evaluate step by step:
 |1|v0|x|pi/2|$\dot x$|1|
 |2|v1|cos(v0)|0|$-sin(v_0)\dot v_0$|0|
 |3|f|sin(v1)|0|$cos(v_1)\dot v_1$|0|
+
 Note that when we calculate "elementary function derivative", we made use of the chain rule. 
 
 
