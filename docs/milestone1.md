@@ -163,6 +163,8 @@ so we do not need to call any other license.
 
 # Feedback
 Background: Introduction: great Introduction, I like the way you bring AD. Good background, we would expect more technical explanations (-0.5).
+
 We will add the formulas of derivative rules.
+
 We will add a computational graph and table to illustrate how AD work based on computation graph more clearly.
 
