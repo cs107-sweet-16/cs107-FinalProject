@@ -26,7 +26,7 @@ elementary functions are already-known.
 - quotient rule: (f/g)' = (f'g-g'f)/(g×g)
 - chain rule: h = f(g(•)), then h' = f'(g(•))× g'(•)
 
-To evaluate the value of a complex function expression, we need to start with
+To evaluate the value of a complicated function expression, we need to start with
 independent variables and evaluate a series of intermediate results and finally
 reach the final result. The idea of AD is to use a computational graph to
 represent the function where each node represents an intermediate variable and
@@ -36,20 +36,25 @@ node in the computation graph can only rely on its parent node(s). As a result, 
 obtain the final derivative result by computing derivatives and repeatedly utilizing 
 derivative rules following the flow of the computation graph. 
 
-Here we give an brief example to illustrate how we calculate 
+Here we give a brief example to illustrate how we calculate derivatives 
+based on compution graph. If we want to evaluate the derivative with respect 
+to x1 at x1=pi/2 for function f=sin(cos(x1)), here is our computation graph
+```mermaid
+graph LR
+A((x1)) --> B((v0))
+B --cos--> C((v1))
+C --sin--> D((f))
 
-%%%Therefore, we follow the computational graph to evaluate the function value at
-any certain node. 
-To evaluate the derivative of a function at a certain point,
-we make use of chain rule: the derivative of the composition h = f(g(•))
-of two differentiable functions f and g is h' = f'(g(•))×
-g'(•) which ensures that the derivative with respect to independent
-variables of a node in the computational graph is the multiplication of the
-derivative of the previous node with respect to the independent variables and
-the derivative of the current node with respect to the previous node. As a
-result, the derivative of the function can also be calculated automatically
-based on the flow of the computational graph, and no asymptotic assumptions are
-needed in the evaluation process.%%%
+```
+
+Then we follow the graph and evaluate step by step:
+|step| trace | Elementary function |Current value | Elementary function derivative| $\nabla_x$ value|
+|--|--|--|--|-- |--|
+|1|v0|x|pi/2|$\dot x$|1|
+|2|v1|cos(v0)|0|$-sin(v_0)\dot v_0$|0|
+|3|f|sin(v1)|0|$cos(v_1)\dot v_1$|0|
+Note that when we calculate "elementary function derivative", we made use of the chain rule. 
+
 
 ## How to Use 
 ```py
