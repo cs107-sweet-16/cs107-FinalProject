@@ -1,4 +1,7 @@
 class Dualnumber:
+    '''
+        Implements the DualNumber class.
+    '''
 
     def __init__(self, a):
         self.val = a
