@@ -53,10 +53,11 @@ class Dualnumber:
     def __rsub__(self, other):
         return self - other
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         try:
             div = Dualnumber(self.val/other.val)
-            div.der = {self.der*other.val - self.val*other.der}/(other.val**2)
+            div.der = (self.der*other.val - self.val*other.der)/(other.val**2)
+            return div
         except AttributeError as e:
             div = Dualnumber(self.val / other)
             div.set_dual(self.der / other)
@@ -76,6 +77,7 @@ class Dualnumber:
             pow = Dualnumber(self.val**other)
             pow.der = (other*self.val**(other-1))*self.der
             return pow
+        # add in real number raised to dual number?
 
     ## check reverse power
     def __rpow__(self, other):
@@ -125,3 +127,17 @@ if __name__ == '__main__':
     z = x**y
     assert z.val == 8
     assert z.der == 12
+
+    # test passing 2 dual numbers through division:
+    x = Dualnumber(4)
+    y = Dualnumber(2)
+    z = x/y
+    assert z.val == 2
+    assert z.der == -0.5
+
+    # test passing 1 dual number and 1 int through division:
+    x = Dualnumber(4)
+    y = 2
+    z = x/y
+    assert z.val == 2
+    assert z.der == 0.5
