@@ -69,12 +69,12 @@ class Dualnumber:
         try:
             # dual nuumber raised to dual number
             pow = Dualnumber(self.val**other.val)
-            pow.der = {other.val*{self.val**(other.val-1)}*self.der} + {np.log(self.val)}*{self.val**(other.val)}*other.der
+            pow.der = (other.val*(self.val**(other.val-1))*self.der) + (np.log(self.val))*(self.val**(other.val))*other.der
             return pow
         except AttributeError as e:
             # dual number raised to real number d^r
             pow = Dualnumber(self.val**other)
-            pow.der = {other*self.val**(other-1)}*self.der
+            pow.der = (other*self.val**(other-1))*self.der
             return pow
 
     ## check reverse power
@@ -97,3 +97,31 @@ if __name__ == '__main__':
     z = x + y
     assert z.val == 9
     assert z.der == 1
+
+    # test passing 2 dual numbers to subtract
+    x = Dualnumber(1)
+    y = Dualnumber(2)
+    z = x - y
+    assert z.val == -1
+    assert z.der == 0
+
+    # test passing 1 dual and 1 non dual number to subtract
+    x = Dualnumber(2)
+    y = 5
+    z = x - y
+    assert z.val == -3
+    assert z.der == 1
+
+    # test passing 2 dual numbers through power:
+    x = Dualnumber(2)
+    y = Dualnumber(2)
+    z = x**y
+    assert z.val == 4
+    assert np.isclose(z.der, 6.772588722239782)
+
+    # test passing 1 dual number and 1 int through power:
+    x = Dualnumber(2)
+    y = 3
+    z = x**y
+    assert z.val == 8
+    assert z.der == 12
