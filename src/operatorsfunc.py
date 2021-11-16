@@ -1,14 +1,11 @@
 from dualnumber import Dualnumber
 import numpy as np
 from typing import Union
-import math
 
 
 def sin(x: Union[float, Dualnumber]) -> Dualnumber:
     try:
-        sin_x = Dualnumber(np.sin(x.val))
-        sin_x.set_dual(np.cos(x.val) * x.der)
-        return sin_x
+        return Dualnumber(np.sin(x.val), der=np.cos(x.val) * x.der)
     except AttributeError as e:
         sin_x = Dualnumber(np.sin(x))
         sin_x.set_dual(0)
@@ -33,24 +30,27 @@ def tan(x: Union[float, Dualnumber]) -> Dualnumber:
 
 def exp(x: Union[float, Dualnumber]) -> Dualnumber:
     # this is specifically euler's number?
+    # try:
+    #     exp_x = Dualnumber(np.exp(x.val))
+    #     exp_x.set_dual((x.val - 1) * np.exp(x.val) * x.der)
+    #     return exp_x
+    # except AttributeError as e:
+    #     exp_x = Dualnumber(np.exp(x))
+    #     exp_x.set_dual(0)
+    #     return exp_x
     try:
-        exp_x = Dualnumber(np.exp(x.val))
-        exp_x.set_dual((x.val - 1) * np.exp(x.val) * x.der)
-        return exp_x
+        x.der
+        return np.exp(1) ** x
     except AttributeError as e:
-        exp_x = Dualnumber(np.exp(x))
-        exp_x.set_dual(0)
-        return exp_x
+        return Dualnumber(np.exp(1) ** x, der=0)
 
 
 def log(x: Union[float, Dualnumber]) -> Dualnumber:
     try:
-        log_x = Dualnumber(x.val)
-        log_x.der = (1 / x.val) * x.der
+        log_x = Dualnumber(np.log(x.val), der=(1 / x.val) * x.der)
         return log_x
     except AttributeError as e:
-        log_x = Dualnumber(x)
-        log_x.set_dual(0)
+        log_x = Dualnumber(np.log(x),der=0)
         return log_x
 
 
@@ -95,14 +95,29 @@ if __name__ == '__main__':
     assert np.isclose(tan_x.der, 2 * np.pi)
 
     # exp test passing in a float
-    x = 1
+    x = 2
     exp_x = exp(x)
-    assert np.isclose(2.718281828459045, exp_x.val)
+    assert np.isclose(np.exp(2), exp_x.val)
     assert exp_x.der == 0
 
     # exp test passing in a dualnumber
     x = Dualnumber(2)
     x.set_dual(1)
     exp_x = exp(x)
-    assert np.isclose(2.718281828459045 ** 2, exp_x.val)
-    assert np.isclose(exp_x.der, 2.718281828459045 ** 2)
+    assert np.isclose(np.exp(2), exp_x.val)
+    assert np.isclose(np.exp(2), exp_x.der)
+
+    # log test  for float
+    x = np.exp(1)
+    log_x = log(x)
+    assert np.isclose(1, log_x.val)
+    assert np.isclose(0, log_x.der)
+
+    # log test for Dual number
+    x = Dualnumber(np.exp(1), 2)
+    log_x = log(x)
+    assert np.isclose(1, log_x.val)
+    assert np.isclose(np.exp(-1)*2, log_x.der)
+
+
+

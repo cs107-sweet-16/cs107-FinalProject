@@ -1,5 +1,4 @@
 import numpy as np
-import operatorsfunc
 
 
 class Dualnumber:
@@ -7,11 +6,9 @@ class Dualnumber:
         Implements the DualNumber class.
     """
 
-    def __init__(self, a):
-        import numpy as np
-        from dualnumber import Dualnumber
+    def __init__(self, a, der=1):
         self.val = a
-        self.der = 1
+        self.der = der
 
     def set_dual(self, dual):
         self.der = dual
@@ -68,28 +65,24 @@ class Dualnumber:
             return div
 
     def __rtruediv__(self, other):
-        self_bar = Dualnumber(self.val)
-        self_bar.der = -self.der
-        return self_bar * (other / (self.val * self.val))
+        self.der = -self.der
+        return self * (other / (self.val * self.val))
 
     def __pow__(self, other):
         try:
-            # dual nuumber raised to dual number
-            pow = Dualnumber(self.val ** other.val)
-            pow.der = pow.val*(other.der*(np.log(self.val))+(self.der*other.val/self.val))
-            return pow
+            power = Dualnumber(self.val ** other.val)
+            power.der = power.val * (other.der * (np.log(self.val)) + (self.der * other.val / self.val))
+            return power
         except AttributeError as e:
             # dual number raised to real number d^r
-            pow = Dualnumber(self.val ** other)
-            pow.der = other * (self.val ** (other - 1)) * self.der
-            return pow
-        # add in real number raised to dual number?
+            power = Dualnumber(self.val ** other)
+            power.der = power.val * (self.der * other / self.val)
+            return power
 
-    ## check reverse power
     def __rpow__(self, other):
-        rpow = Dualnumber(self.val * np.log(other))
-        rpow.der = self.der * np.log(other)
-        return operatorsfunc.exp(rpow)
+        rpower = Dualnumber(other ** self.val)
+        rpower.der = rpower.val * (np.log(other) * self.der)
+        return rpower
 
 
 if __name__ == '__main__':
@@ -125,13 +118,14 @@ if __name__ == '__main__':
 
     # test passing 1 dual and 1 non dual number to subtract
     x = Dualnumber(2)
+    x.set_dual(4)
     y = 5
     z = x - y
     z_inv = y - x
     assert z.val == -3
-    assert z.der == 1
+    assert z.der == 4
     assert z_inv.val == 3
-    assert z_inv.der == -1
+    assert z_inv.der == -4
 
     # test 2 real nos subtraction
 
@@ -182,8 +176,8 @@ if __name__ == '__main__':
     x = Dualnumber(5)
     x.set_dual(4)
     y = 5
-    z = x/y
-    z_inv = y/x
+    z = x / y
+    z_inv = y / x
     assert z.val == 1
     assert z.der == .8
     assert z_inv.val == 1
@@ -193,23 +187,26 @@ if __name__ == '__main__':
 
     x = 3
     y = 5
-    assert x/y == .6
+    assert x / y == .6
 
     # test passing 2 dual numbers through power:
     x = Dualnumber(2)
     x.set_dual(3)
-    y = Dualnumber(2)
+    y = Dualnumber(4, der=5)
 
     z = x ** y
-    assert z.val == 4
-    assert np.isclose(z.der, 6.772588722239782)
+    assert z.val == 16
+    assert np.isclose(z.der, 151.45177444479563)
 
     # test passing 1 dual number and 1 int through power:
-    x = Dualnumber(2)
+    x = Dualnumber(2, der=4)
     y = 3
     z = x ** y
+    z_inv = y**x
     assert z.val == 8
-    assert z.der == 12
+    assert z.der == 48
+    assert z_inv.val == 9
+    assert np.isclose(z_inv.der, 4*np.log(3)*9)
 
     # test passing 2 dual numbers through division:
     x = Dualnumber(4)
