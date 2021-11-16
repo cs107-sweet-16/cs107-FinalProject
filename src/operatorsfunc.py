@@ -119,5 +119,14 @@ if __name__ == '__main__':
     assert np.isclose(1, log_x.val)
     assert np.isclose(np.exp(-1)*2, log_x.der)
 
+    # complex function 1
+    x = Dualnumber(2, der = 1)
+    f = sin(x**2+x) - log(x)
+    assert np.isclose(-0.9725626, f.val)
+    assert np.isclose(4.300851433251, f.der)
 
-
+    # complex function 2
+    x = Dualnumber(np.pi, der = 1)
+    f = (tan(x)) - 2**x * exp(x)
+    assert np.isclose(-204.2160993, f.val)
+    assert np.isclose(-344.76791290283, f.der)
