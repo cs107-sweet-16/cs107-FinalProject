@@ -128,13 +128,11 @@ if __name__ == '__main__':
     assert z_inv.der == -4
 
     # test 2 real nos subtraction
-
     x = 2
     y = 3
     assert x - y == -1
 
     # test passing two dual numbers to multiply
-
     x = Dualnumber(3)
     x.set_dual(4)
     y = Dualnumber(2)
@@ -144,7 +142,6 @@ if __name__ == '__main__':
     assert z.der == 23
 
     # test passing one dual number and one real number to multiply
-
     x = Dualnumber(3)
     x.set_dual(4)
     y = 5
