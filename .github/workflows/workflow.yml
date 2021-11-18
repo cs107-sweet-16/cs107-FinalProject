@@ -20,3 +20,7 @@ jobs:
           coverage xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
+        with:
+          python-version: 3.6
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
