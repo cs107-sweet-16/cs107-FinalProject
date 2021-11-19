@@ -4,6 +4,11 @@ import numpy as np
 class Dualnumber:
     """
         Implements the DualNumber class.
+
+        Args:
+            set_dual(int): Sets dual number value.
+            add(int or float): Adds two dual numbers.
+
     """
 
     def __init__(self, a, der=1):
