@@ -4,6 +4,11 @@ from typing import Union
 
 
 def sin(x: Union[float, Dualnumber]) -> Dualnumber:
+    """
+    Implements the sin elementary operation, with dualnumber support.
+    
+    :param x: Performs sin operation on float or dualnumber.
+    """
     try:
         return Dualnumber(np.sin(x.val), der=np.cos(x.val) * x.der)
     except AttributeError as e:
@@ -13,6 +18,11 @@ def sin(x: Union[float, Dualnumber]) -> Dualnumber:
 
 
 def cos(x: Union[float, Dualnumber]) -> Dualnumber:
+    """
+    Implements the cos elementary operation, with dualnumber support.
+
+    :param x: Performs cos operation on float or dualnumber.
+    """
     try:
         cos_x = Dualnumber(np.cos(x.val))
         cos_x.set_dual(-np.sin(x.val) * x.der)
@@ -24,11 +34,21 @@ def cos(x: Union[float, Dualnumber]) -> Dualnumber:
 
 
 def tan(x: Union[float, Dualnumber]) -> Dualnumber:
+    """
+    Implements the tan elementary operation, with dualnumber support.
+
+    :param x: Performs cos operation on float or dualnumber.
+    """
     tan_x = sin(x) / cos(x)
     return tan_x
 
 
 def exp(x: Union[float, Dualnumber]) -> Dualnumber:
+    """
+    Implements the exp elementary operation, with dualnumber support.
+
+    :param x: Performs exp operation on float or dualnumber.
+    """
     # this is specifically euler's number?
     # try:
     #     exp_x = Dualnumber(np.exp(x.val))
@@ -46,6 +66,11 @@ def exp(x: Union[float, Dualnumber]) -> Dualnumber:
 
 
 def log(x: Union[float, Dualnumber]) -> Dualnumber:
+    """
+    Implements the log elementary operation, with dualnumber support.
+
+    :param x: Performs log operation on float or dualnumber.
+    """
     try:
         log_x = Dualnumber(np.log(x.val), der=(1 / x.val) * x.der)
         return log_x

@@ -57,22 +57,23 @@ Note that when we calculate "elementary function derivative", we made use of the
 ### How to Install 
 To use the current version of our autodifferntiation python package, you must first 'git clone' on your terminal.
 
-```py
+```sh
 git clone https://github.com/cs107-sweet-16/cs107-FinalProject.git
 ```
 
 After successful cloning of the repository, follow by installing the package requirements from the 'requirements.txt' file. 
 
-```py
-pip3 install -r requirements.txt
+```sh
+  cd cs107-FinalProject
+  pip3 install -r requirements.txt
 ```
 
 Finally, finish by importing dualnumber and it's operators"
 
 ```py
-import numpy as np
-from dualnumber import Dualnumber
-from operatorsfunc import sin, cos, tan, exp, log
+  import numpy as np
+  from src.dualnumber import Dualnumber
+  from src.operatorsfunc import sin, cos, tan, exp, log
 ```
 
 Now you are ready to use our autodifferentiation package!
@@ -139,11 +140,20 @@ symbol class.
 
 ### Test Suite
 
-Our test suite will live in a separate directory called `test`. We will use
+Our test suite will live in a separate directory called `tests`. We will use
 TravisCI to run continuous integration, and make sure we do not accidentally
 introduce regressions in our code when we change or add functionality. CodeCov
 will be used to ensure that any new code that we write is properly tested and
 accounted for.
+
+### Documentation
+We will use Sphinx as our documentation generator. To build sphinx, you can run the command inside
+the `docs/` directory:
+```
+sphinx-build source/ build/
+```
+
+The generated HTML files are viewable as `cs107-FinalProject/docs/build/index.html`.
     
 ### Distribution 
 We will use PyPI to distribute our package.   
