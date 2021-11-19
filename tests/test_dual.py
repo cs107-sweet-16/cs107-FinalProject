@@ -144,6 +144,7 @@ def test_pos_dualnumber():
     # test positive of dual number
     x = Dualnumber(4)
     x.set_dual(4)
+    x = +x
     assert x.val == 4 
     assert x.der == 4
 
@@ -156,3 +157,6 @@ def test_eq_dualnumber():
     y.set_dual(4)
 
     assert x == y
+
+    assert x == 4
+
