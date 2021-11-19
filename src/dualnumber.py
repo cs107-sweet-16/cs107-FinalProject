@@ -84,6 +84,18 @@ class Dualnumber:
         rpower.der = rpower.val * (np.log(other) * self.der)
         return rpower
 
+    def __neg__(self):
+        return Dualnumber(-self.val, -self.der)
+
+    def __pos__(self):
+        return self
+
+    def __eq__(self, other):
+        try:
+            return self.val == other.val and self.der == other.der
+        except AttributeError as e:
+            return self.val == other
+
 
 if __name__ == '__main__':
     # test passing 2 dual numbers to add

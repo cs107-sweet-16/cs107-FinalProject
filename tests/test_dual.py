@@ -131,3 +131,28 @@ def test_divide_dualnumber_and_nondual_number_2():
     z = x / y
     assert z.val == 2
     assert z.der == 0.5
+
+def test_neg_dualnumber():
+    # test negating dual number
+    x = Dualnumber(4)
+    x.set_dual(4)
+    x = -x
+    assert x.val == -4 
+    assert x.der == -4
+
+def test_pos_dualnumber():
+    # test positive of dual number
+    x = Dualnumber(4)
+    x.set_dual(4)
+    assert x.val == 4 
+    assert x.der == 4
+
+def test_eq_dualnumber():
+    # test equality of dual number
+    x = Dualnumber(4)
+    x.set_dual(4)
+
+    y = Dualnumber(4)
+    y.set_dual(4)
+
+    assert x == y
