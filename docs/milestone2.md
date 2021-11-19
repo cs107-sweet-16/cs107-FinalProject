@@ -209,11 +209,14 @@ but we desire to implement a reverse mode function which will implement
 the backpropagation step, utilizing the saved results from our forward pass.
 
 ## License
-We will use the MIT License for our project because we are intending
-to publish the project on github as open-source. MIT License allows for
-commercial and private use, while protecting us against liability and warranty.
-Furthermore, MIT License is BSD compatible, which is the license used by Numpy,
-so we do not need to call any other license.
+Copyright 2021 Jingxing Fang, Bhawesh Kumar, Anna Wuest, Albert Ge
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 ## Future Features
 Our future features include the following:
