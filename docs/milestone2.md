@@ -215,13 +215,13 @@ commercial and private use, while protecting us against liability and warranty.
 Furthermore, MIT License is BSD compatible, which is the license used by Numpy,
 so we do not need to call any other license.
 
-# Feedback
-1. Background: Introduction: great Introduction, I like the way you bring AD. Good background, we would expect more technical explanations (-0.5).
-Response:
-* We will add the formulas of derivative rules.
-* We will add a computational graph and table to illustrate how AD work based on computation graph more clearly.
+## Future Features
+Our future features include the following:
+* Fine-tuning our forward pass to include a computational graph
+* Adding additional functions like the inverse of sinusoidal functions, and other operations
+* Utilizing the computational graph to execute a backward pass
+* Creating more advanced documentation through Sphinx 
+* Releasing the package on PyPi for installation through pip
+* Expand our testing suite to accomodate additional features
 
-2. How to use: Very clear, for the next milestone, try to think through more detailed use cases in order to apprehend everything.
-Response: We will add a couple more use cases to demonstrate the different features of our autodiff library.
-* We will add an example on using the elementary operators (for example, f = sin (x)), and demonstrate how to compute the forward mode result;
-* We will add an example on using the backward mode
+We expect the most difficult part of our future features to be constructing the computational graph. We expect to accomplish this through ordered dictionaries, where we will add lines of code to each defined function, so when they are called upon we can access the operations and numbers in order. We will then use the operations and numbers to contruct the nodes and edges of a computational graph, which will subsequently be used fto perform the backward pass. 
