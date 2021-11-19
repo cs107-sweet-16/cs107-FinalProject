@@ -175,17 +175,32 @@ that run on the computational graph.
 We will begin by constructing a dualNumber() class that
 deals with the properties of dual numbers. It will take a real value and dual
 value as the initial input. The dualNumber class will have the following
-algebraic operations.
+algebraic operations, along with their reverse counterparts (not shown). 
 
 ```py
-class dualNumber():
-  def __init__(self, real, dual):
-    self.real = real
-    self.dual = dual
-  def __sum__(self, other):
-  def __subtract__(self, other):
-  def __mul__(self, other):
-  def __div__(self, other):
+class Dualnumber:
+    def __init__(self, a, der=1):
+        self.val = a
+        self.der = der
+
+    def set_dual(self, dual):
+        self.der = dual
+
+    def __add__(self, other):
+
+    def __mul__(self, other):
+
+    def __sub__(self, other):
+
+    def __truediv__(self, other):
+
+    def __pow__(self, other):
+
+    def __neg__(self, other):
+    
+    def __pos__(self, other):
+    
+    def __eq__(self, other):
 ```
 
 ### Primitives
@@ -194,7 +209,7 @@ We will maintain an updated list of these operations:
 1. `sin`
 2. `cos`
 3. `pow`
-4.  `exp`
+4. `exp`
 5. `log`
 
 ### Forward Pass 
