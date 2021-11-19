@@ -225,3 +225,5 @@ Our future features include the following:
 * Expand our testing suite to accomodate additional features
 
 We expect the most difficult part of our future features to be constructing the computational graph. We expect to accomplish this through ordered dictionaries, where we will add lines of code to each defined function, so when they are called upon we can access the operations and numbers in order. We will then use the operations and numbers to contruct the nodes and edges of a computational graph, which will subsequently be used fto perform the backward pass. 
+
+
