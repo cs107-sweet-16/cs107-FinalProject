@@ -43,6 +43,34 @@ def sub(a,b):
             der[k] = -bder[k]
     return val, der
 
+def truediv(a,b):
+    aval, ader = a 
+    bval, bder = b 
+    val = aval / bval
+    der = dict()
+    for k in ader:
+        der[k] = ader[k] / bval
+    for k in bder:
+        if k in der:
+            der[k] += - aval / bval / bval * bder[k]
+        else:
+            der[k] = - aval / bval / bval * bder[k]
+    return val, der
+
+def power(a, b):
+    aval, ader = a 
+    bval, bder = b 
+    val = aval ** bval
+    der = dict()
+    for k in ader:
+        der[k] =  ader[k]*bval*aval**(bval-1)
+    for k in bder:
+        if k in der:
+            der[k] += val * np.log(aval) * bder[k]
+        else:
+            der[k] = val * np.log(aval) * bder[k]
+    return val, der    
+
 def sine(a):
     aval, ader = a 
     val = np.sin(aval)
@@ -194,6 +222,63 @@ class Node:
     
     def __rsub__(self, other):
         return -self + other
+    
+    def __truediv__(self, other):
+        if isinstance(other, Node):
+            r = other
+        elif isinstance(other, int) or isinstance(other, float):
+            r = valNode()
+            r._set_val(other)
+        else:
+            raise TypeError
+        return funcNode(truediv,self,r)
+    
+    def __rtruediv__(self, other):
+        if isinstance(other, int) or isinstance(other, float):
+            l = valNode()
+            l._set_val(other)
+        else:
+            raise TypeError
+        return funcNode(truediv,l,self)        
+       
+    '''def __pow__(self, other):
+        if isinstance(other, Node):
+            r = other
+        elif isinstance(other, int) or isinstance(other, float):
+            r = valNode()
+            r._set_val(other)
+        else:
+            raise TypeError
+        return exp(other * log(self))
+    
+    def __rpow__(self, other):
+        if isinstance(other, int) or isinstance(other, float):
+            l = valNode()
+            l._set_val(np.log(other))
+        else:
+            raise TypeError
+        return exp(self * l)'''
+
+    def __pow__(self, other):
+        if isinstance(other, Node):
+            r = other
+        elif isinstance(other, int) or isinstance(other, float):
+            r = valNode()
+            r._set_val(other)
+        else:
+            raise TypeError
+        return funcNode(power, self, other)
+    
+    def __rpow__(self, other):
+        if isinstance(other, int) or isinstance(other, float):
+            l = valNode()
+            l._set_val(other)
+        else:
+            raise TypeError
+        return funcNode(power, other, self)
+        
+    def __pos__(self):
+        return self
         
         
 class valNode(Node):
@@ -236,7 +321,7 @@ class funcNode(Node):
 if __name__=='__main__':
     a = valNode('a')
     b = valNode('b')
-    c = exp(b + log(a*b))
+    c = exp(b)/ log(a*b)
     # c = sin(1+a)+sin(np.pi/2)
     # c = sin(a+1+b)
     print(c)
