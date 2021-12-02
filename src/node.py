@@ -131,7 +131,7 @@ def logarithm(a):
     return val, der
 
 
-def exp(a):
+def log(a):
     if isinstance(a, Node):
         return funcNode(logarithm, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -236,7 +236,7 @@ class funcNode(Node):
 if __name__=='__main__':
     a = valNode('a')
     b = valNode('b')
-    c = 1-a
+    c = exp(b + log(a*b))
     # c = sin(1+a)+sin(np.pi/2)
     # c = sin(a+1+b)
     print(c)
