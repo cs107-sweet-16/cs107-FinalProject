@@ -249,7 +249,7 @@ class Node:
             r._set_val(other)
         else:
             raise TypeError
-        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.pow(x,y)*np.log(x), self, r)
+        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.power(x,y)*np.log(x), self, r)
     
     def __rpow__(self, other):
         if isinstance(other, int) or isinstance(other, float):
@@ -257,7 +257,7 @@ class Node:
             l._set_val(other)
         else:
             raise TypeError
-        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.pow(x,y)*np.log(x), l, self)
+        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.power(x,y)*np.log(x), l, self)
         
     def __pos__(self):
         return self
@@ -349,9 +349,11 @@ class funcNode(Node):
 if __name__=='__main__':
     a = valNode('a')
     b = valNode('b')
-    f = sin(a * b + b)
+    c = valNode('c')
+    f = sin(a * b + b) + c**a
     a._set_val(2)
     b._set_val(5)
+    c._set_val(3)
     print(f.forward())
     f.forward_pass()
     print(f.val)
