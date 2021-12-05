@@ -174,9 +174,6 @@ class Node:
     def __init__(self):
         # self.der = dict()
         pass
-        
-    
-
     
     def __add__(self, other):
         if isinstance(other, Node):
@@ -344,6 +341,8 @@ class funcNode(Node):
         else:
             lder = self.leftdf(self.left.val)
             self.left.reverse(lder, partial*adjoint)     
+
+        # return self.val
             
             
 if __name__=='__main__':
@@ -352,10 +351,67 @@ if __name__=='__main__':
     f = sin(a * b + b)
     a._set_val(2)
     b._set_val(5)
-    print(f.forward())
+    # print(f)
+    # print(f.forward())
+    f_val, f_grad = f.forward()
+
+    actual_f_val  = np.sin(a.val * b.val + b.val)
+    actual_f_grad = {
+        'a': b.val * np.cos((a.val + 1) * b.val), 
+        'b': (a.val + 1) * np.cos((a.val + 1) * b.val)
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+    
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
     f.forward_pass()
-    print(f.val)
+    # print(f.val, )
     f.reverse(1,1)
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der
+    }
+    for var in f_grad:
+        assert np.isclose(f_grad[var], reverse_grads[var])
     print(a.der, b.der)
     
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
+    f = exp(a / c) + b
+    a._set_val(np.pi/2)
+    b._set_val(np.pi/3)
+    c._set_val(np.pi)
+
+    actual_f_val = np.exp(a.val / c.val) + b.val
+    print("testing p2")
+    # print(np.exp(a.val / c.val), np.arccos(np.exp(a.val / c.val)))
+
+    actual_f_grad = {
+        'a': (np.exp(a.val / c.val)) / (c.val),
+        'b': 1,
+        'c': -(a.val * np.exp(a.val / c.val)) / (c.val ** 2),
+    }
+
+    f.forward_pass()
+    # print(f.val, )
+    f.reverse(1,1)
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der,
+        'c': c.der,
+    }
+
+    print("ders")
+    print(a.der, b.der, c.der)
+    print("actual ders")
+    print(actual_f_grad)
+    for var in actual_f_grad.keys():
+        print(actual_f_grad[var], reverse_grads[var])
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+
  
