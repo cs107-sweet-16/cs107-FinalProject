@@ -102,7 +102,7 @@ def cosine(a):
 
 def cos(a):
     if isinstance(a, Node):
-        return funcNode(cosine, a, None)
+        return funcNode(np.cos, lambda x: -np.sin(x), None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
         n = valNode()
         n._set_val(np.cos(a))
@@ -122,7 +122,7 @@ def tangent(a):
 
 def tan(a):
     if isinstance(a, Node):
-        return funcNode(tangent, a, None)
+        return funcNode(np.tan, lambda x: 1/(np.cos(x))**2, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
         n = valNode()
         n._set_val(np.tan(a))
@@ -142,7 +142,7 @@ def exponential(a):
 
 def exp(a):
     if isinstance(a, Node):
-        return funcNode(exponential, a, None)
+        return funcNode(np.exp, np.exp, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
         n = valNode()
         n._set_val(np.exp(a))
@@ -161,7 +161,7 @@ def logarithm(a):
 
 def log(a):
     if isinstance(a, Node):
-        return funcNode(logarithm, a, None)
+        return funcNode(np.log, lambda x: 1/x, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
         n = valNode()
         n._set_val(np.log(a))
@@ -218,7 +218,7 @@ class Node:
             r._set_val(other)
         else:
             raise TypeError
-        return funcNode(sub,self,r)
+        return funcNode(np.subtract,lambda x,y: 1, lambda x,y: -1, self, r)
     
     def __rsub__(self, other):
         return -self + other
@@ -231,7 +231,7 @@ class Node:
             r._set_val(other)
         else:
             raise TypeError
-        return funcNode(truediv,self,r)
+        return funcNode(np.divide, lambda x,y: 1/y, lambda x,y: -x/y/y, self, r)
     
     def __rtruediv__(self, other):
         if isinstance(other, int) or isinstance(other, float):
@@ -239,7 +239,7 @@ class Node:
             l._set_val(other)
         else:
             raise TypeError
-        return funcNode(truediv,l,self)               
+        return funcNode(np.divide, lambda x,y: 1/y, lambda x,y: -x/y/y, l, self)               
 
     def __pow__(self, other):
         if isinstance(other, Node):
@@ -249,7 +249,7 @@ class Node:
             r._set_val(other)
         else:
             raise TypeError
-        return funcNode(power, self, other)
+        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.pow(x,y)*np.log(x), self, r)
     
     def __rpow__(self, other):
         if isinstance(other, int) or isinstance(other, float):
@@ -257,7 +257,7 @@ class Node:
             l._set_val(other)
         else:
             raise TypeError
-        return funcNode(power, other, self)
+        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.pow(x,y)*np.log(x), l, self)
         
     def __pos__(self):
         return self

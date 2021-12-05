@@ -267,7 +267,7 @@ class Node:
             r._set_val(other)
         else:
             raise TypeError
-        return funcNode(power, self, other)
+        return funcNode(power, self, r)
     
     def __rpow__(self, other):
         if isinstance(other, int) or isinstance(other, float):
@@ -275,10 +275,14 @@ class Node:
             l._set_val(other)
         else:
             raise TypeError
-        return funcNode(power, other, self)
+        return funcNode(power, l, self)
         
     def __pos__(self):
         return self
+    
+    # logarithm
+    # hyperbolic
+    # square root
         
         
 class valNode(Node):
@@ -321,12 +325,16 @@ class funcNode(Node):
 if __name__=='__main__':
     a = valNode('a')
     b = valNode('b')
-    c = exp(b)/ log(a*b)
-    # c = sin(1+a)+sin(np.pi/2)
+    c = log(a/b)
+    c = a + b*a
+    # c = a*sin(b+a)+sin(np.pi/2)
     # c = sin(a+1+b)
     print(c)
     a._set_val(2)
     b._set_val(3)
+    print(c.forward())
+    a._set_val(1)
+    b._set_val(2)
     print(c.forward())
     
  
