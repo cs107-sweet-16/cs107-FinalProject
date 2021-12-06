@@ -71,13 +71,13 @@ def test_sin_unit2():
 
 def test_tan_unit1():
     print("unit tests tan:")
-	a = valNode('a')
-	f = tan(a)
-	a._set_val(np.pi/6)
-	f_val, f_grad = f.forward()
+    a = valNode('a')
+    f = tan(a)
+    a._set_val(np.pi/6)
+    f_val, f_grad = f.forward()
 
-	assert np.isclose(f_val, np.tan(a.val))
-	assert np.isclose(f_grad['a'], 4/3)
+    assert np.isclose(f_val, np.tan(a.val))
+    assert np.isclose(f_grad['a'], 4/3)
 
 def test_tan_unit2():
     print("unit tests tan:")
