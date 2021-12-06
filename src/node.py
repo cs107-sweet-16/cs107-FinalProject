@@ -229,7 +229,7 @@ class funcNode(Node):
         # return self.val
             
             
-if __name__=='__main__':
+if __name__ == '__main__':
     x = valNode('x')
     y = valNode('y')
     c = valNode('c')
