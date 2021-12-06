@@ -230,14 +230,13 @@ class funcNode(Node):
             
             
 if __name__=='__main__':
-    print("testing: sin(ab + b) + c^a")
-    a = valNode('a')
-    b = valNode('b')
+    x = valNode('x')
+    y = valNode('y')
     c = valNode('c')
-    f = sin(a * b + b) + c**a
-    a._set_val(2)
-    b._set_val(5)
-    c._set_val(3)
+    f = sin(log(x))+tan(x*x+y*x+x**3*y)
+    x._set_val(2)
+    y._set_val(3)
+    c._set_val(np.pi)
     print(f.forward())
 
 
