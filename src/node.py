@@ -1,85 +1,5 @@
 import numpy as np 
 
-
-def add(a,b):
-    aval, ader = a 
-    bval, bder = b 
-    val = aval + bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k]
-    for k in bder:
-        if k in der:
-            der[k] += bder[k]
-        else:
-            der[k] = bder[k]
-    return val, der
-
-def mul(a,b):
-    aval, ader = a 
-    bval, bder = b 
-    val = aval * bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k] * bval
-    for k in bder:
-        if k in der:
-            der[k] += bder[k] * aval
-        else:
-            der[k] = bder[k] * aval
-    return val, der
-
-def sub(a,b):
-    aval, ader = a 
-    bval, bder = b 
-    val = aval - bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k]
-    for k in bder:
-        if k in der:
-            der[k] -= bder[k]
-        else:
-            der[k] = -bder[k]
-    return val, der
-
-def truediv(a,b):
-    aval, ader = a 
-    bval, bder = b 
-    val = aval / bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k] / bval
-    for k in bder:
-        if k in der:
-            der[k] += - aval / bval / bval * bder[k]
-        else:
-            der[k] = - aval / bval / bval * bder[k]
-    return val, der
-
-def power(a, b):
-    aval, ader = a 
-    bval, bder = b 
-    val = aval ** bval
-    der = dict()
-    for k in ader:
-        der[k] =  ader[k]*bval*aval**(bval-1)
-    for k in bder:
-        if k in der:
-            der[k] += val * np.log(aval) * bder[k]
-        else:
-            der[k] = val * np.log(aval) * bder[k]
-    return val, der    
-
-def sine(a):
-    aval, ader = a 
-    val = np.sin(aval)
-    der = dict()
-    for k in ader:
-        der[k] = np.cos(aval)*ader[k]
-    return val, der
-
-
 def sin(a):
     if isinstance(a, Node):
         return funcNode(np.sin, np.cos, None, a, None)
@@ -90,16 +10,6 @@ def sin(a):
     else:
         raise TypeError
     
-    
-def cosine(a):
-    aval, ader = a 
-    val = np.cos(aval)
-    der = dict()
-    for k in ader:
-        der[k] = -np.sin(aval)*ader[k]
-    return val, der
-
-
 def cos(a):
     if isinstance(a, Node):
         return funcNode(np.cos, lambda x: -np.sin(x), None, a, None)
@@ -109,16 +19,6 @@ def cos(a):
         return n
     else:
         raise TypeError
-
-
-def tangent(a):
-    aval, ader = a 
-    val = np.tan(aval)
-    der = dict()
-    for k in ader:
-        der[k] = ader[k]/(np.cos(aval))**2
-    return val, der
-
 
 def tan(a):
     if isinstance(a, Node):
@@ -130,16 +30,6 @@ def tan(a):
     else:
         raise TypeError
 
-
-def exponential(a):
-    aval, ader = a 
-    val = np.exp(aval)
-    der = dict()
-    for k in ader:
-        der[k] = ader[k]*np.exp(aval)
-    return val, der
-
-
 def exp(a):
     if isinstance(a, Node):
         return funcNode(np.exp, np.exp, None, a, None)
@@ -149,15 +39,6 @@ def exp(a):
         return n
     else:
         raise TypeError
-
-def logarithm(a):
-    aval, ader = a 
-    val = np.log(aval)
-    der = dict()
-    for k in ader:
-        der[k] = ader[k]/aval
-    return val, der
-
 
 def log(a):
     if isinstance(a, Node):
@@ -274,10 +155,13 @@ class valNode(Node):
     
     def _set_val(self, val):
         self.val = val
+
     def __str__(self):
         return str(self.name) if self.name != None else str(self.val)
     
     def forward(self):
+        if self.name is None:
+            return self.val, {self.name: 0}
         return self.val, {self.name: 1}
     
     def forward_pass(self):
