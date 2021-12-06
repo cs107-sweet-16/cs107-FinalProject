@@ -281,7 +281,10 @@ class valNode(Node):
         return str(self.name) if self.name != None else str(self.val)
     
     def forward(self):
-        return self.val, {self.name: 1}
+        if self.name != None:
+            return self.val, {self.name: 1}
+        else:
+            return self.val, {}
     
     def forward_pass(self):
         return self.val
@@ -347,17 +350,17 @@ class funcNode(Node):
             
             
 if __name__=='__main__':
-    a = valNode('a')
-    b = valNode('b')
+    x = valNode('x')
+    y = valNode('y')
     c = valNode('c')
-    f = sin(a * b + b) + c**a
-    a._set_val(2)
-    b._set_val(5)
-    c._set_val(3)
+    f = sin(log(x))+tan(x*x+y*x+x**3*y)
+    x._set_val(2)
+    y._set_val(3)
+    c._set_val(np.pi)
     print(f.forward())
     f.forward_pass()
     print(f.val)
     f.reverse(1,1)
-    print(a.der, b.der)
+    print(x.der, y.der)
     
  
