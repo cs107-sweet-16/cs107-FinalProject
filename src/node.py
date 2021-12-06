@@ -246,7 +246,7 @@ class Node:
             r._set_val(other)
         else:
             raise TypeError
-        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.pow(x,y)*np.log(x), self, r)
+        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.power(x,y)*np.log(x), self, r)
     
     def __rpow__(self, other):
         if isinstance(other, int) or isinstance(other, float):
@@ -254,7 +254,7 @@ class Node:
             l._set_val(other)
         else:
             raise TypeError
-        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.pow(x,y)*np.log(x), l, self)
+        return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.power(x,y)*np.log(x), l, self)
         
     def __pos__(self):
         return self
@@ -346,6 +346,18 @@ class funcNode(Node):
             
             
 if __name__=='__main__':
+    print("testing: sin(ab + b) + c^a")
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
+    f = sin(a * b + b) + c**a
+    a._set_val(2)
+    b._set_val(5)
+    c._set_val(3)
+    print(f.forward())
+
+
+    print("testing: sin(ab + b)")
     a = valNode('a')
     b = valNode('b')
     f = sin(a * b + b)
@@ -375,8 +387,8 @@ if __name__=='__main__':
     }
     for var in f_grad:
         assert np.isclose(f_grad[var], reverse_grads[var])
-    print(a.der, b.der)
     
+    print("testing: e^(a/c) + b")
     a = valNode('a')
     b = valNode('b')
     c = valNode('c')
@@ -386,7 +398,6 @@ if __name__=='__main__':
     c._set_val(np.pi)
 
     actual_f_val = np.exp(a.val / c.val) + b.val
-    print("testing p2")
     # print(np.exp(a.val / c.val), np.arccos(np.exp(a.val / c.val)))
 
     actual_f_grad = {
@@ -404,12 +415,7 @@ if __name__=='__main__':
         'c': c.der,
     }
 
-    print("ders")
-    print(a.der, b.der, c.der)
-    print("actual ders")
-    print(actual_f_grad)
     for var in actual_f_grad.keys():
-        print(actual_f_grad[var], reverse_grads[var])
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
