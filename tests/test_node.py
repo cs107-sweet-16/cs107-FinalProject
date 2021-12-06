@@ -127,6 +127,29 @@ def test_log_unit2():
     assert np.isclose(f_grad['a'], 1 / a.val)
 
 
+def test_cos_log_multivar():
+    print("testing cos(ab/c) + c*log(a)")
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
+    f = cos((a * b) / c) + c * log(a)
+    a._set_val(4)
+    b._set_val(-1)
+    c._set_val(10)
+    f_val, f_grad = f.forward()
+    actual_f_val = np.cos((4 * -1) / 10) + 10 * np.log(4)
+    actual_f_grad = {
+        'a': (c.val / a.val) - b.val * np.sin((a.val * b.val) / c.val) / c.val,
+        'b': (-a.val * np.sin((a.val * b.val) / c.val)) / c.val,
+        'c': ((a.val * b.val * np.sin((a.val * b.val) / c.val) / (c.val ** 2)) + np.log(a.val))
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+
 # original tests:
 def test_sin_multivar():
     print("testing: sin(ab + b) + c^a")
