@@ -1,88 +1,83 @@
 import numpy as np
 
 
-def add(a, b):
-    aval, ader = a
-    bval, bder = b
-    val = aval + bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k]
-    for k in bder:
-        if k in der:
-            der[k] += bder[k]
-        else:
-            der[k] = bder[k]
-    return val, der
+# def add(a,b):
+# aval, ader = a
+# bval, bder = b
+# val = aval + bval
+# der = dict()
+# for k in ader:
+# der[k] = ader[k]
+# for k in bder:
+# if k in der:
+# der[k] += bder[k]
+# else:
+# der[k] = bder[k]
+# return val, der
 
+# def mul(a,b):
+# aval, ader = a
+# bval, bder = b
+# val = aval * bval
+# der = dict()
+# for k in ader:
+# der[k] = ader[k] * bval
+# for k in bder:
+# if k in der:
+# der[k] += bder[k] * aval
+# else:
+# der[k] = bder[k] * aval
+# return val, der
 
-def mul(a, b):
-    aval, ader = a
-    bval, bder = b
-    val = aval * bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k] * bval
-    for k in bder:
-        if k in der:
-            der[k] += bder[k] * aval
-        else:
-            der[k] = bder[k] * aval
-    return val, der
+# def sub(a,b):
+# aval, ader = a
+# bval, bder = b
+# val = aval - bval
+# der = dict()
+# for k in ader:
+# der[k] = ader[k]
+# for k in bder:
+# if k in der:
+# der[k] -= bder[k]
+# else:
+# der[k] = -bder[k]
+# return val, der
 
+# def truediv(a,b):
+# aval, ader = a
+# bval, bder = b
+# val = aval / bval
+# der = dict()
+# for k in ader:
+# der[k] = ader[k] / bval
+# for k in bder:
+# if k in der:
+# der[k] += - aval / bval / bval * bder[k]
+# else:
+# der[k] = - aval / bval / bval * bder[k]
+# return val, der
 
-def sub(a, b):
-    aval, ader = a
-    bval, bder = b
-    val = aval - bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k]
-    for k in bder:
-        if k in der:
-            der[k] -= bder[k]
-        else:
-            der[k] = -bder[k]
-    return val, der
+# def power(a, b):
+# aval, ader = a
+# bval, bder = b
+# val = aval ** bval
+# der = dict()
+# for k in ader:
+# der[k] =  ader[k]*bval*aval**(bval-1)
+# for k in bder:
+# if k in der:
+# der[k] += val * np.log(aval) * bder[k]
+# else:
+# der[k] = val * np.log(aval) * bder[k]
+# return val, der
 
-
-def truediv(a, b):
-    aval, ader = a
-    bval, bder = b
-    val = aval / bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k] / bval
-    for k in bder:
-        if k in der:
-            der[k] += - aval / bval / bval * bder[k]
-        else:
-            der[k] = - aval / bval / bval * bder[k]
-    return val, der
-
-
-def power(a, b):
-    aval, ader = a
-    bval, bder = b
-    val = aval ** bval
-    der = dict()
-    for k in ader:
-        der[k] = ader[k] * bval * aval ** (bval - 1)
-    for k in bder:
-        if k in der:
-            der[k] += val * np.log(aval) * bder[k]
-        else:
-            der[k] = val * np.log(aval) * bder[k]
-    return val, der
-
-
-def sine(a):
-    aval, ader = a
-    val = np.sin(aval)
-    der = dict()
-    for k in ader:
-        der[k] = np.cos(aval) * ader[k]
-    return val, der
+# def sine(a):
+# aval, ader = a
+# val = np.sin(aval)
+# der = dict()
+# for k in ader:
+# der[k] = np.cos(aval)*ader[k]
+# return val, der
 
 
 def sin(a):
@@ -96,13 +91,13 @@ def sin(a):
         raise TypeError
 
 
-def cosine(a):
-    aval, ader = a
-    val = np.cos(aval)
-    der = dict()
-    for k in ader:
-        der[k] = -np.sin(aval) * ader[k]
-    return val, der
+# def cosine(a):
+# aval, ader = a
+# val = np.cos(aval)
+# der = dict()
+# for k in ader:
+# der[k] = -np.sin(aval)*ader[k]
+# return val, der
 
 
 def cos(a):
@@ -116,13 +111,13 @@ def cos(a):
         raise TypeError
 
 
-def tangent(a):
-    aval, ader = a
-    val = np.tan(aval)
-    der = dict()
-    for k in ader:
-        der[k] = ader[k] / (np.cos(aval)) ** 2
-    return val, der
+# def tangent(a):
+# aval, ader = a
+# val = np.tan(aval)
+# der = dict()
+# for k in ader:
+# der[k] = ader[k]/(np.cos(aval))**2
+# return val, der
 
 
 def tan(a):
@@ -136,13 +131,72 @@ def tan(a):
         raise TypeError
 
 
-def exponential(a):
-    aval, ader = a
-    val = np.exp(aval)
-    der = dict()
-    for k in ader:
-        der[k] = ader[k] * np.exp(aval)
-    return val, der
+def sinh(a):
+    if isinstance(a, Node):
+        return funcNode(np.sinh, np.cosh, None, a, None)
+    elif isinstance(a, int) or isinstance(a, float):
+        n = valNode()
+        n._set_val(np.sinh(a))
+        return n
+    else:
+        raise TypeError
+
+
+def cosh(a):
+    if isinstance(a, Node):
+        return funcNode(np.cosh, np.sinh, None, a, None)
+    elif isinstance(a, int) or isinstance(a, float):
+        n = valNode()
+        n._set_val(np.cosh(a))
+        return n
+    else:
+        raise TypeError
+
+
+def tanh(a):
+    if isinstance(a, Node):
+        return funcNode(np.tanh, lambda x: 1 - np.tanh(x) ** 2, None, a, None)
+    elif isinstance(a, int) or isinstance(a, float):
+        n = valNode()
+        n._set_val(np.tanh(a))
+        return n
+    else:
+        raise TypeError
+
+
+def logistic(a):
+    if isinstance(a, Node):
+        return funcNode(_logistic, lambda x: _logistic(x) * (1 - _logistic(x)), None, a, None)
+    elif isinstance(a, int) or isinstance(a, float):
+        n = valNode()
+        n._set_val(_logistic(a))
+        return n
+    else:
+        raise TypeError
+
+
+def _logistic(a):
+    return (np.tanh(a / 2) + 1) * 0.5
+
+
+def sqrt(a):
+    if isinstance(a, Node):
+        return funcNode(np.sqrt, lambda x: 0.5 / np.sqrt(x), None, a, None)
+    elif isinstance(a, int) or isinstance(a, float):
+        n = valNode()
+        n._set_val(np.sqrt(a))
+        return n
+    else:
+        raise TypeError
+
+
+# def exponential(a):
+# aval, ader = a
+# val = np.exp(aval)
+# der = dict()
+# for k in ader:
+# der[k] = ader[k]*np.exp(aval)
+# return val, der
 
 
 def exp(a):
@@ -156,13 +210,13 @@ def exp(a):
         raise TypeError
 
 
-def logarithm(a):
-    aval, ader = a
-    val = np.log(aval)
-    der = dict()
-    for k in ader:
-        der[k] = ader[k] / aval
-    return val, der
+# def logarithm(a):
+# aval, ader = a
+# val = np.log(aval)
+# der = dict()
+# for k in ader:
+# der[k] = ader[k]/aval
+# return val, der
 
 
 def log(a):
@@ -195,21 +249,6 @@ def log_ab(a, b):
         n = valNode()
         n._set_val((np.log(a)) / np.log(b))
         return n
-
-
-def logistic(a):
-    if isinstance(a, Node):
-        return funcNode(_logistic, lambda x: _logistic(x) * (1 - _logistic(x)), None, a, None)
-    elif isinstance(a, int) or isinstance(a, float):
-        n = valNode()
-        n._set_val(_logistic(a))
-        return n
-    else:
-        raise TypeError
-
-
-def _logistic(a):
-    return (np.tanh(a / 2) + 1) * 0.5
 
 
 class Node:
@@ -327,6 +366,7 @@ class valNode(Node):
         return self.val
 
     def reverse(self, partial, adjoint):
+        # print(partial, adjoint)
         if self.name != None:
             self.der += partial * adjoint
 
@@ -397,6 +437,30 @@ if __name__ == '__main__':
     y._set_val(3)
     c._set_val(np.pi)
     print(f.forward())
+    f.forward_pass()
+    f.reverse(1, 1)
+    print(f.val, x.der, y.der)
+
+    x.der = 0
+    y.der = 0
+    f = log(sin(exp(x) + y)) + exp(y) + x
+    x._set_val(0)
+    y._set_val(1)
+    print(f.forward())
+    f.forward_pass()
+    f.reverse(1, 1)
+    print(f.val, x.der, y.der)
+
+    x.der = 0
+    y.der = 0
+    f = log(sin(x + y) ** 2) + exp(x ** 2 + y ** 2)
+    print(f)
+    x._set_val(1)
+    y._set_val(2)
+    print(f.forward())
+    f.forward_pass()
+    f.reverse(1, 1)
+    print(f.val, x.der, y.der)
 
     print("testing: sin(ab + b)")
     a = valNode('a')
@@ -458,3 +522,7 @@ if __name__ == '__main__':
 
     for var in actual_f_grad.keys():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+
+
