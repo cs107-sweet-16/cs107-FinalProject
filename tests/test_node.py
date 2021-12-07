@@ -2,28 +2,30 @@ import pytest
 import sys
 import os
 import numpy as np
+
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
-from node import sin, cos, tan, exp, log, valNode
+from node import sin, cos, tan, exp, log, logistic, valNode
+
 
 def test_sin_multivar():
     print("testing: sin(ab + b) + c^a")
     a = valNode('a')
     b = valNode('b')
     c = valNode('c')
-    f = sin(a * b + b) + c**a
+    f = sin(a * b + b) + c ** a
     a._set_val(2)
     b._set_val(5)
     c._set_val(3)
 
-    actual_f_val  = np.sin(a.val * b.val + b.val) + (c.val) ** a.val
+    actual_f_val = np.sin(a.val * b.val + b.val) + (c.val) ** a.val
     actual_f_grad = {
-        'a': b.val * np.cos((a.val + 1) * b.val) + (c.val) ** (a.val) * np.log(c.val), 
+        'a': b.val * np.cos((a.val + 1) * b.val) + (c.val) ** (a.val) * np.log(c.val),
         'b': (a.val + 1) * np.cos((a.val + 1) * b.val),
         'c': (a.val) * (c.val) ** (a.val - 1)
     }
     f.forward_pass()
     # print(f.val, )
-    f.reverse(1,1)
+    f.reverse(1, 1)
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -45,22 +47,22 @@ def test_sin_multivar_2():
     # print(f.forward())
     f_val, f_grad = f.forward()
 
-    actual_f_val  = np.sin(a.val * b.val + b.val)
+    actual_f_val = np.sin(a.val * b.val + b.val)
     actual_f_grad = {
-        'a': b.val * np.cos((a.val + 1) * b.val), 
+        'a': b.val * np.cos((a.val + 1) * b.val),
         'b': (a.val + 1) * np.cos((a.val + 1) * b.val)
     }
 
     # TODO this is for forward mode - move to different test file
     assert np.isclose(f_val, actual_f_val)
-    
+
     for var in f_grad:
         assert np.isclose(f_grad[var], actual_f_grad[var])
     #
 
     f.forward_pass()
     # print(f.val, )
-    f.reverse(1,1)
+    f.reverse(1, 1)
     reverse_grads = {
         'a': a.der,
         'b': b.der
@@ -68,14 +70,15 @@ def test_sin_multivar_2():
     assert f.val == actual_f_val
     for var in f_grad:
         assert np.isclose(f_grad[var], reverse_grads[var])
-    
+
+
 def test_exp_multivar():
     a = valNode('a')
     b = valNode('b')
     c = valNode('c')
     f = exp(a / c) + b
-    a._set_val(np.pi/2)
-    b._set_val(np.pi/3)
+    a._set_val(np.pi / 2)
+    b._set_val(np.pi / 3)
     c._set_val(np.pi)
 
     actual_f_val = np.exp(a.val / c.val) + b.val
@@ -89,7 +92,7 @@ def test_exp_multivar():
 
     f.forward_pass()
     # print(f.val, )
-    f.reverse(1,1)
+    f.reverse(1, 1)
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -98,6 +101,7 @@ def test_exp_multivar():
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
 
 def test_tan_multivar():
     a = valNode('a')
@@ -122,14 +126,15 @@ def test_tan_multivar():
     for var in actual_f_grad.keys():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
-def test_log_multivar():    
+
+def test_log_multivar():
     a = valNode('a')
     b = valNode('b')
     c = valNode('c')
     d = valNode('d')
     a._set_val(1.5)
     b._set_val(2)
-    c._set_val(np.pi/4)
+    c._set_val(np.pi / 4)
     d._set_val(3)
 
     f = d * log(a) + log(exp(b)) + log(cos(c))
@@ -155,13 +160,13 @@ def test_log_multivar():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
-def test_tan_multivar2():    
+def test_tan_multivar2():
     a = valNode('a')
     b = valNode('b')
     a._set_val(2)
     b._set_val(np.pi)
 
-    f = tan(exp(a/b))
+    f = tan(exp(a / b))
     f.forward_pass()
     f.reverse(1, 1)
     reverse_grads = {
@@ -169,7 +174,7 @@ def test_tan_multivar2():
         'b': b.der,
     }
 
-    actual_f_val = np.tan(np.exp(a.val/b.val))
+    actual_f_val = np.tan(np.exp(a.val / b.val))
     actual_f_grad = {
         'a': np.exp(a.val / b.val) * 1 / (np.cos(np.exp(a.val / b.val)) ** 2) / (b.val),
         'b': -a.val * (np.exp(a.val / b.val)) * 1 / (np.cos(np.exp(a.val / b.val)) ** 2) / (b.val ** 2),
@@ -183,36 +188,111 @@ def test_pow_div_multivar():
     a = valNode('a')
     a._set_val(1.731)
 
-    f = a**2 + 3**a + 5/a + a/2
+    f = a ** 2 + 3 ** a + 5 / a + a / 2
     f.forward_pass()
     f.reverse(1, 1)
     reverse_grads = {
         'a': a.der,
     }
-    actual_f_val = a.val**2 + 3**a.val + 5/a.val + a.val/2
+    actual_f_val = a.val ** 2 + 3 ** a.val + 5 / a.val + a.val / 2
     actual_f_grad = {
-        'a': 2 * a.val + 3**a.val * np.log(3) - 5 / (a.val**2) + 1/2
+        'a': 2 * a.val + 3 ** a.val * np.log(3) - 5 / (a.val ** 2) + 1 / 2
     }
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
         # print(actual_f_grad[var], reverse_grads[var])
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
- 
+
+def test_logistic():
+    a = valNode('a')
+    a._set_val(2)
+    b = valNode('b')
+    b._set_val(3)
+
+    f = logistic(sin(a)+cos(b))
+    f.forward_pass()
+    f.reverse(1, 1)
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der
+    }
+    actual_f_val = 0.5*(1+np.tanh(0.5*np.sin(a.val)+0.5*np.cos(b.val)))
+    actual_f_grad = {
+        'a': actual_f_val*(1-actual_f_val)*np.cos(a.val),
+        'b': -1*actual_f_val*(1-actual_f_val)*np.sin(b.val)
+    }
+    assert f.val == actual_f_val
+    for var in actual_f_grad.keys():
+        # print(actual_f_grad[var], reverse_grads[var])
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
 def test_chain_rule():
     a = valNode('a')
     a._set_val(1.731)
 
-    f = exp(cos(log(2*(a + 5))))
+    f = exp(cos(log(2 * (a + 5))))
     f.forward_pass()
     f.reverse(1, 1)
     reverse_grads = {
         'a': a.der,
     }
-    actual_f_val = np.exp(np.cos(np.log(2*(a.val + 5))))
+    actual_f_val = np.exp(np.cos(np.log(2 * (a.val + 5))))
     actual_f_grad = {
-        'a': np.exp(np.cos(np.log(2*(a.val + 5)))) * (-np.sin(np.log(2*(a.val + 5)))) * (1 / (2*(a.val + 5))) * (2)
+        'a': np.exp(np.cos(np.log(2 * (a.val + 5)))) * (-np.sin(np.log(2 * (a.val + 5)))) * (1 / (2 * (a.val + 5))) * (
+            2)
     }
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
         # print(actual_f_grad[var], reverse_grads[var])
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_complex_func1():
+    # sin(tanx/logy) at x=pi/4, y = e, f = .8415, dx = 1.081, dy = -0.1988
+    a = valNode('a')
+    a._set_val(np.pi / 4)
+
+    b = valNode('b')
+    b._set_val(np.exp(1))
+
+    f = sin(tan(a) / log(b))
+    f.forward_pass()
+    f.reverse(1, 1)
+    actual_f_val = np.sin(np.tan(a.val) / np.log(b.val))
+    assert f.val == actual_f_val
+    actual_f_grad = {
+        'a': ((np.cos(a.val)) ** (-2)) * (np.cos(np.tan(a.val) / np.log(b.val))) * 1 / np.log(b.val),
+        'b': -1 * np.tan(a.val) * np.cos(np.tan(a.val) / np.log(b.val)) * (1 / b.val) * ((np.log(b.val)) ** (-2))
+    }
+
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der,
+    }
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_complex_func2():
+    # sin(tanx/logy) at x=pi/4, y = e, f = .8415, dx = 1.081, dy = -0.1988
+    a = valNode('a')
+    a._set_val(1)
+
+    b = valNode('b')
+    b._set_val(2)
+
+    f = (a + b) ** 2 + log(a) * sin(b)
+    f.forward_pass()
+    f.reverse(1, 1)
+    actual_f_val = (a.val + b.val) ** 2 + np.sin(b.val) * np.log(a.val)
+    assert f.val == actual_f_val
+    actual_f_grad = {
+        'a': 2 * (a.val + b.val) + np.sin(b.val) / a.val,
+        'b': 2 * (a.val + b.val) + np.log(a.val) * np.cos(b.val)
+    }
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der,
+    }
+    for var in actual_f_grad.keys():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
