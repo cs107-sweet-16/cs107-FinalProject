@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
-from node import sin, cos, tan, exp, log, logistic, valNode
+from node import sin, cos, tan, exp, log, logistic, log_ab, valNode
 
 
 def test_sin_multivar():
@@ -225,6 +225,84 @@ def test_logistic():
     for var in actual_f_grad.keys():
         # print(actual_f_grad[var], reverse_grads[var])
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+def test_log_ab_both_nodes():
+    a = valNode('a')
+    a._set_val(2)
+    b = valNode('b')
+    b._set_val(3)
+
+    f = log_ab(a+b, a*b)
+    f.forward_pass()
+    f.reverse(1, 1)
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der
+    }
+    actual_f_val = (np.log(a.val+b.val))/(np.log(a.val*b.val))
+    actual_f_grad = {
+        'a': (((np.log(a.val*b.val))/(a.val+b.val)) - ((np.log(a.val+b.val))/a.val))/((np.log(a.val*b.val))**2),
+        'b': (((np.log(a.val*b.val))/(a.val+b.val)) - ((np.log(a.val+b.val))/b.val))/((np.log(a.val*b.val))**2)
+    }
+    assert f.val == actual_f_val
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_log_ab_base_int_arg_node():
+    a = valNode('a')
+    a._set_val(np.exp(2))
+
+    f = sin(log_ab(a, 3))
+    f.forward_pass()
+    f.reverse(1, 1)
+    reverse_grads = {
+        'a': a.der,
+    }
+    actual_f_val = np.sin(np.log(a.val)/np.log(3))
+    actual_f_grad = {
+        'a': np.cos(np.log(a.val)/np.log(3))*(1/(a.val*np.log(3)))
+    }
+    assert f.val == actual_f_val
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+def test_log_ab_base_Node_arg_int():
+    a = valNode('a')
+    a._set_val(np.exp(2))
+
+    f = sin(log_ab(3, a))
+    f.forward_pass()
+    f.reverse(1, 1)
+    reverse_grads = {
+        'a': a.der
+    }
+    actual_f_val = np.sin(np.log(3)/np.log(a.val))
+    actual_f_grad = {
+        'a': (-np.cos(np.log(3)/np.log(a.val))*np.log(3)*1/(a.val*np.log(a.val)*np.log(a.val)))
+    }
+    assert f.val == actual_f_val
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+def test_log_ab_base_arg_int():
+    a = valNode('a')
+    a._set_val(np.exp(2))
+
+    f = sin(log_ab(log_ab(np.exp(3), np.exp(1)), a))
+    f.forward_pass()
+    f.reverse(1, 1)
+    reverse_grads = {
+        'a': a.der
+    }
+    actual_f_val = np.sin(np.log(3) / np.log(a.val))
+    actual_f_grad = {
+        'a': (-np.cos(np.log(3) / np.log(a.val)) * np.log(3) * 1 / (a.val * np.log(a.val) * np.log(a.val)))
+    }
+    assert f.val == actual_f_val
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
 
 def test_chain_rule():
     a = valNode('a')

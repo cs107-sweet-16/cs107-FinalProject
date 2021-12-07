@@ -176,6 +176,27 @@ def log(a):
         raise TypeError
 
 
+def _log_ab(arg, base=np.exp(1)):
+    return np.log(arg) / np.log(base)
+
+
+def log_ab(a, b):
+    if isinstance(a, Node) and isinstance(b, Node):
+        return funcNode(_log_ab, lambda x, y: (1 / np.log(y)) * 1 / x,
+                        lambda x, y: (-(1 / y) * np.log(x) * ((1 / np.log(y)) ** 2)),
+                        a, b)
+    elif isinstance(a, Node) and (isinstance(b, int) or isinstance(b, float)):
+        return (log(a)) / np.log(b)
+
+    elif (isinstance(a, int) or isinstance(a, float)) and isinstance(b, Node):
+        return (np.log(a)) / log(b)
+
+    elif (isinstance(a, int) or isinstance(a, float)) and (isinstance(b, int) or isinstance(b, float)):
+        n = valNode()
+        n._set_val((np.log(a)) / np.log(b))
+        return n
+
+
 def logistic(a):
     if isinstance(a, Node):
         return funcNode(_logistic, lambda x: _logistic(x) * (1 - _logistic(x)), None, a, None)
