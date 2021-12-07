@@ -61,7 +61,7 @@ https://pypi.org/project/autodiff-aabj/.
 
 Assuming you have pip installed, run
 ```sh
-(cs107test) ~ pip install autodiff-aabj
+pip install autodiff-aabj
 ```
 
 Finally, finish by importing dualnumber and it's operators:
