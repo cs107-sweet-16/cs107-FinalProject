@@ -4,6 +4,9 @@ import numpy as np
 class Dualnumber:
     """
         Implements the DualNumber class.
+        Args:
+             set_dual(int): Sets dual number value.
+             add(int or float): Adds two dual numbers.
     """
 
     def __init__(self, a, der=1):
@@ -14,6 +17,11 @@ class Dualnumber:
         self.der = dual
 
     def __add__(self, other):
+        """
+            Overloads the add operation.
+            Args:
+                 other(Dualnumber or number): Adds number to other.
+        """
         try:
             addition = Dualnumber(self.val + other.val)
             addition.der = self.der + other.der
@@ -28,6 +36,11 @@ class Dualnumber:
         return self + other
 
     def __mul__(self, other):
+        """
+            Overloads the mul operation.
+            Args:
+                 other(Dualnumber or number): multliplies number to other.
+        """
         try:
             multi = Dualnumber(self.val * other.val)
             multi.der = self.val * other.der + self.der * other.val
@@ -41,6 +54,11 @@ class Dualnumber:
         return self * other
 
     def __sub__(self, other):
+        """
+            Overloads the sub operation.
+            Args:
+                 other(Dualnumber or number): Subtracts other from number.
+        """
         try:
             subtraction = Dualnumber(self.val - other.val)
             subtraction.der = self.der - other.der
