@@ -243,12 +243,10 @@ def test_chain_rule():
     }
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
-        # print(actual_f_grad[var], reverse_grads[var])
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
 def test_complex_func1():
-    # sin(tanx/logy) at x=pi/4, y = e, f = .8415, dx = 1.081, dy = -0.1988
     a = valNode('a')
     a._set_val(np.pi / 4)
 
@@ -274,7 +272,6 @@ def test_complex_func1():
 
 
 def test_complex_func2():
-    # sin(tanx/logy) at x=pi/4, y = e, f = .8415, dx = 1.081, dy = -0.1988
     a = valNode('a')
     a._set_val(1)
 
