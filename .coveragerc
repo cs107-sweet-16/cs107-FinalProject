@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = src/
+source = autodiff/
 
 [report]
 exclude_lines =
