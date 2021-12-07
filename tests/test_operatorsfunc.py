@@ -3,9 +3,9 @@ import sys
 import os
 import numpy as np
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
-from dualnumber import Dualnumber
-from operatorsfunc import sin, cos, tan, exp, log
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+from autodiff.dualnumber import Dualnumber
+from autodiff.operatorsfunc import sin, cos, tan, exp, log
 
 
 def test_sample():

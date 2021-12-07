@@ -1,4 +1,4 @@
-from dualnumber import Dualnumber
+from autodiff.dualnumber import Dualnumber
 import numpy as np
 from typing import Union
 
