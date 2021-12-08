@@ -266,7 +266,7 @@ class funcNode(Node):
         return self.val
     
     def reverse_pass(self, partial, adjoint):
-        if self.right != None:
+        if self.right != None: 
             lder = self.leftdf(self.left.val, self.right.val)
             rder = self.rightdf(self.left.val, self.right.val)
             self.left.reverse_pass(lder, partial*adjoint)
