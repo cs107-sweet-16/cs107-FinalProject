@@ -223,13 +223,19 @@ class Node:
     are of type integer, float, or Node. If they are of tyep Node, then the value and it's derivative is computed
     and stored in a dictionary. If the values are of type int or float, then the values are first convered to Node
     class by calling valNode.
+
+    Attributes:
+        val (int, float): Current value of the variable.
+        der (int, float): Derivative of variable.
     """
     def __init__(self):
+        """"""
         # self.der = dict()
         pass
     
     def __add__(self, other):
-        """Implements native python function for addition. Calculates and inserts the derivative values into the
+        """
+        Implements native python function for addition. Calculates and inserts the derivative values into the
         left and right nodes via valNode for construction of a computational graph.
 
         Args:
@@ -405,7 +411,7 @@ class valNode(Node):
     
     def forward_pass(self):
         """
-        
+
         """
         return self.val
         
