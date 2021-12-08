@@ -1,0 +1,9 @@
+.. autodiff documentation master file, created by
+   sphinx-quickstart on Tue Nov  9 21:28:25 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Node Class
+====================================
+.. automodule:: node
+   :members:

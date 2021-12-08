@@ -217,11 +217,24 @@ def log(a,b):
     
 
 class Node:
+    """
+    Node class that implements the following native python functions: addition, subtraction, multipliation,
+    division, unary operators, and power. Depending on the implemented funtions, Node will check if the inputs
+    are of type integer, float, or Node. If they are of tyep Node, then the value and it's derivative is computed
+    and stored in a dictionary. If the values are of type int or float, then the values are first convered to Node
+    class by calling valNode.
+    """
     def __init__(self):
         # self.der = dict()
         pass
     
     def __add__(self, other):
+        """Implements native python function for addition. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be added.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -232,10 +245,23 @@ class Node:
         return funcNode(np.add,lambda x,y: 1, lambda x,y: 1, self, r)
     
     def __radd__(self, other):
+        """Implements native python function for reverse of addition. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be added.
+
+        """
         return self + other
     
     
     def __mul__(self, other):
+        """Implements native python function for multiplication. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be multiplied.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -250,10 +276,19 @@ class Node:
         
 
     def __neg__(self):
+        """
+        Implements native python unary operator for negation.
+        """
         return self * (-1)
 
 
     def __sub__(self, other):
+        """Implements native python function for subtraction. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be subtracted.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -267,6 +302,12 @@ class Node:
         return -self + other
     
     def __truediv__(self, other):
+        """Implements native python function for division. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be multiplied.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -285,6 +326,12 @@ class Node:
         return funcNode(np.divide, lambda x,y: 1/y, lambda x,y: -x/y/y, l, self)               
 
     def __pow__(self, other):
+        """Implements native python function for power. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value of the exponent.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -303,6 +350,9 @@ class Node:
         return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.power(x,y)*np.log(x), l, self)
         
     def __pos__(self):
+        """
+        Implements positive unary operator.
+        """
         return self
     
     # logarithm
@@ -311,6 +361,11 @@ class Node:
         
         
 class valNode(Node):
+    """
+    Sets variables as valNode class, which allows the users to auto-differentiate functions that use them. valNode class
+    overrides native python functions and unary operators, in order to construct a sequential computational graph. Sets
+    the initial derivative (0) for each assigned variable.
+    """
     def __init__(self, name = None):
         super().__init__()
         self.der = 0
@@ -319,17 +374,39 @@ class valNode(Node):
         #     self.der[name]=1
     
     def _set_val(self, val):
+        """
+        Sets the numeric value for a valNode.
+
+        Args:
+            val(int, float): numeric value of the valNode.
+        """
         self.val = val
     def __str__(self):
+        """
+        Prints information about a specified valNode.
+
+        Returns:
+            Returns the name of the valNode or it's value if the name is empty.
+        """
         return str(self.name) if self.name != None else str(self.val)
     
     def forward(self):
+        """
+        Executes a simple forward pass for a single node.
+
+        Returns:
+            Current value and empty derivative if number. Otherwise returns the value of the specified valNode and
+            empty dictionary.
+        """
         if self.name != None:
             return self.val, {self.name: 1}
         else:
             return self.val, {}
     
     def forward_pass(self):
+        """
+        
+        """
         return self.val
         
     def reverse(self, partial, adjoint):

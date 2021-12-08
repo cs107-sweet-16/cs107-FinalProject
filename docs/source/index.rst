@@ -12,6 +12,7 @@ Welcome to autodiff's documentation!
 
    dual
    operators
+   node
 
 
 Introduction
