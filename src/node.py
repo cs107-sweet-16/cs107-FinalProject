@@ -1,83 +1,6 @@
 import numpy as np 
 
 
-# def add(a,b):
-    # aval, ader = a 
-    # bval, bder = b 
-    # val = aval + bval
-    # der = dict()
-    # for k in ader:
-        # der[k] = ader[k]
-    # for k in bder:
-        # if k in der:
-            # der[k] += bder[k]
-        # else:
-            # der[k] = bder[k]
-    # return val, der
-
-# def mul(a,b):
-    # aval, ader = a 
-    # bval, bder = b 
-    # val = aval * bval
-    # der = dict()
-    # for k in ader:
-        # der[k] = ader[k] * bval
-    # for k in bder:
-        # if k in der:
-            # der[k] += bder[k] * aval
-        # else:
-            # der[k] = bder[k] * aval
-    # return val, der
-
-# def sub(a,b):
-    # aval, ader = a 
-    # bval, bder = b 
-    # val = aval - bval
-    # der = dict()
-    # for k in ader:
-        # der[k] = ader[k]
-    # for k in bder:
-        # if k in der:
-            # der[k] -= bder[k]
-        # else:
-            # der[k] = -bder[k]
-    # return val, der
-
-# def truediv(a,b):
-    # aval, ader = a 
-    # bval, bder = b 
-    # val = aval / bval
-    # der = dict()
-    # for k in ader:
-        # der[k] = ader[k] / bval
-    # for k in bder:
-        # if k in der:
-            # der[k] += - aval / bval / bval * bder[k]
-        # else:
-            # der[k] = - aval / bval / bval * bder[k]
-    # return val, der
-
-# def power(a, b):
-    # aval, ader = a 
-    # bval, bder = b 
-    # val = aval ** bval
-    # der = dict()
-    # for k in ader:
-        # der[k] =  ader[k]*bval*aval**(bval-1)
-    # for k in bder:
-        # if k in der:
-            # der[k] += val * np.log(aval) * bder[k]
-        # else:
-            # der[k] = val * np.log(aval) * bder[k]
-    # return val, der    
-
-# def sine(a):
-    # aval, ader = a 
-    # val = np.sin(aval)
-    # der = dict()
-    # for k in ader:
-        # der[k] = np.cos(aval)*ader[k]
-    # return val, der
 
 
 def sin(a):
@@ -89,16 +12,6 @@ def sin(a):
         return n
     else:
         raise TypeError
-    
-    
-# def cosine(a):
-    # aval, ader = a 
-    # val = np.cos(aval)
-    # der = dict()
-    # for k in ader:
-        # der[k] = -np.sin(aval)*ader[k]
-    # return val, der
-
 
 def cos(a):
     if isinstance(a, Node):
@@ -109,16 +22,6 @@ def cos(a):
         return n
     else:
         raise TypeError
-
-
-# def tangent(a):
-    # aval, ader = a 
-    # val = np.tan(aval)
-    # der = dict()
-    # for k in ader:
-        # der[k] = ader[k]/(np.cos(aval))**2
-    # return val, der
-
 
 def tan(a):
     if isinstance(a, Node):
@@ -174,15 +77,6 @@ def sqrt(a):
         raise TypeError
 
 
-# def exponential(a):
-    # aval, ader = a 
-    # val = np.exp(aval)
-    # der = dict()
-    # for k in ader:
-        # der[k] = ader[k]*np.exp(aval)
-    # return val, der
-
-
 def exp(a):
     if isinstance(a, Node):
         return funcNode(np.exp, np.exp, None, a, None)
@@ -192,15 +86,6 @@ def exp(a):
         return n
     else:
         raise TypeError
-
-# def logarithm(a):
-    # aval, ader = a 
-    # val = np.log(aval)
-    # der = dict()
-    # for k in ader:
-        # der[k] = ader[k]/aval
-    # return val, der
-
 
 def ln(a):
     if isinstance(a, Node):
@@ -304,10 +189,7 @@ class Node:
         
     def __pos__(self):
         return self
-    
-    # logarithm
-    # hyperbolic
-    # square root
+
         
         
 class valNode(Node):
@@ -330,6 +212,7 @@ class valNode(Node):
             return self.val, {}
     
     def forward_pass(self):
+        self.der = 0
         return self.val
         
     def reverse(self, partial, adjoint):
@@ -393,10 +276,23 @@ class funcNode(Node):
             self.left.reverse(lder, partial*adjoint)     
 
         # return self.val
+
             
             
 if __name__=='__main__':
-    x = valNode('x')
+
+    
+    # v = vector([1,2,3])
+    
+    def f(v):
+        '''
+            f takes a size=3 vector and output a size=2 vector
+        '''
+        f1 = sin(ln(v[0]))+tan(v[0]**2+v[0]*v[1]+v[2])
+        f2 = ln(sin(exp(v[0])+v[1])) + exp(v[1]) + v[2]
+        return f1,f2
+
+    '''x = valNode('x')
     y = valNode('y')
     c = valNode('c')
     f = sin(log(x))+tan(x*x+y*x+x**3*y)
@@ -488,7 +384,7 @@ if __name__=='__main__':
     }
 
     for var in actual_f_grad.keys():
-        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])'''
 
 
 
