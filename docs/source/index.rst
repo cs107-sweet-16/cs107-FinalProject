@@ -7,11 +7,8 @@ Welcome to autodiff's documentation!
 ====================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth:
    :caption: Contents:
-
-   dual
-   operators
    node
 
 
