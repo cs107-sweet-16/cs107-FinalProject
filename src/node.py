@@ -216,9 +216,10 @@ class valNode(Node):
         return self.val
         
     def reverse_pass(self, partial, adjoint):
-        # print(partial, adjoint)
-        if self.name != None:
-            self.der += partial*adjoint
+        if self.name == None:
+            return dict()
+        self.der += partial*adjoint
+        return {self.name: self}
 
 
 class funcNode(Node):
@@ -269,14 +270,26 @@ class funcNode(Node):
         if self.right != None: 
             lder = self.leftdf(self.left.val, self.right.val)
             rder = self.rightdf(self.left.val, self.right.val)
-            self.left.reverse_pass(lder, partial*adjoint)
-            self.right.reverse_pass(rder, partial*adjoint)
+            lvars = self.left.reverse_pass(lder, partial*adjoint)
+            rvars = self.right.reverse_pass(rder, partial*adjoint)
+            variables = dict()
+            for v in rvars:
+                if v not in lvars:
+                    lvars[v] = rvars[v]
         else:
             lder = self.leftdf(self.left.val)
-            self.left.reverse_pass(lder, partial*adjoint)     
-
+            lvars = self.left.reverse_pass(lder, partial*adjoint) 
+            
+        return lvars
         # return self.val
-
+    
+    def reverse(self):
+        self.forward_pass()
+        variables = self.reverse_pass(1,1)
+        der = { v: node.der for v, node in variables.items() }
+        return self.val, der
+    
+    
 class vector:
     def __init__(self, name, size):
         self.name = name
@@ -288,7 +301,15 @@ class vector:
             raise ValueError(f"Input size has a mismatch with the vector size ({self.size})")
         for node, val in zip(self.elements, array):
             node.set_val(val)
-            
+
+    def __getitem__(self, key):
+        return self.elements[key]
+        
+    def __iter__(self, key):
+        return iter(self.elements)
+    
+    
+
             
 if __name__=='__main__':
 
@@ -303,19 +324,17 @@ if __name__=='__main__':
         f2 = ln(sin(exp(v[0])+v[1])) + exp(v[1]) + v[2]
         return f1,f2
 
-    '''x = valNode('x')
+    x = valNode('x')
     y = valNode('y')
     c = valNode('c')
-    f = sin(log(x))+tan(x*x+y*x+x**3*y)
+    f = sin(ln(x))+tan(x*x+y*x+x*x*x*y)
     x._set_val(2)
     y._set_val(3)
     c._set_val(np.pi)
     print(f.forward())
-    f.forward_pass()
-    f.reverse(1,1)
-    print(f.val, x.der, y.der)
+    print(f.reverse())
     
-    x.der = 0
+    '''x.der = 0
     y.der = 0
     f = log(sin(exp(x)+y)) + exp(y) + x
     x._set_val(0)
