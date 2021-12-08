@@ -215,7 +215,7 @@ class valNode(Node):
         self.der = 0
         return self.val
         
-    def reverse(self, partial, adjoint):
+    def reverse_pass(self, partial, adjoint):
         # print(partial, adjoint)
         if self.name != None:
             self.der += partial*adjoint
@@ -265,15 +265,15 @@ class funcNode(Node):
             self.val = self.func(self.left.forward_pass())
         return self.val
     
-    def reverse(self, partial, adjoint):
+    def reverse_pass(self, partial, adjoint):
         if self.right != None:
             lder = self.leftdf(self.left.val, self.right.val)
             rder = self.rightdf(self.left.val, self.right.val)
-            self.left.reverse(lder, partial*adjoint)
-            self.right.reverse(rder, partial*adjoint)
+            self.left.reverse_pass(lder, partial*adjoint)
+            self.right.reverse_pass(rder, partial*adjoint)
         else:
             lder = self.leftdf(self.left.val)
-            self.left.reverse(lder, partial*adjoint)     
+            self.left.reverse_pass(lder, partial*adjoint)     
 
         # return self.val
 
@@ -286,6 +286,8 @@ class vector:
     def set_val(array):
         if len(array) != self.size:
             raise ValueError(f"Input size has a mismatch with the vector size ({self.size})")
+        for node, val in zip(self.elements, array):
+            node.set_val(val)
             
             
 if __name__=='__main__':
