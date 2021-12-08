@@ -1,6 +1,5 @@
 import numpy as np 
 
-
 # def add(a,b):
     # aval, ader = a 
     # bval, bder = b 
@@ -80,6 +79,7 @@ import numpy as np
     # return val, der
 
 
+
 def sin(a):
     if isinstance(a, Node):
         return funcNode(np.sin, np.cos, None, a, None)
@@ -89,8 +89,7 @@ def sin(a):
         return n
     else:
         raise TypeError
-    
-    
+        
 # def cosine(a):
     # aval, ader = a 
     # val = np.cos(aval)
@@ -98,6 +97,7 @@ def sin(a):
     # for k in ader:
         # der[k] = -np.sin(aval)*ader[k]
     # return val, der
+
 
 
 def cos(a):
@@ -110,7 +110,6 @@ def cos(a):
     else:
         raise TypeError
 
-
 # def tangent(a):
     # aval, ader = a 
     # val = np.tan(aval)
@@ -118,6 +117,7 @@ def cos(a):
     # for k in ader:
         # der[k] = ader[k]/(np.cos(aval))**2
     # return val, der
+
 
 
 def tan(a):
@@ -181,6 +181,7 @@ def sqrt(a):
     # for k in ader:
         # der[k] = ader[k]*np.exp(aval)
     # return val, der
+
 
 
 def exp(a):
@@ -387,6 +388,7 @@ class valNode(Node):
             val(int, float): numeric value of the valNode.
         """
         self.val = val
+
     def __str__(self):
         """
         Prints information about a specified valNode.
@@ -408,6 +410,9 @@ class valNode(Node):
             return self.val, {self.name: 1}
         else:
             return self.val, {}
+        if self.name is None:
+            return self.val, {self.name: 0}
+        return self.val, {self.name: 1}
     
     def forward_pass(self):
         """
@@ -478,7 +483,7 @@ class funcNode(Node):
         # return self.val
             
             
-if __name__=='__main__':
+if __name__ == '__main__':
     x = valNode('x')
     y = valNode('y')
     c = valNode('c')
