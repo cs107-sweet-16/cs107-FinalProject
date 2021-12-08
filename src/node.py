@@ -176,7 +176,7 @@ class Node:
             r = valNode()
             r._set_val(other)
         else:
-            raise TypeError
+            raise TypeError("unsupported input type(s) for the operand")
         return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.power(x,y)*np.log(x), self, r)
     
     def __rpow__(self, other):
@@ -277,6 +277,15 @@ class funcNode(Node):
 
         # return self.val
 
+class vector:
+    def __init__(self, name, size):
+        self.name = name
+        self.size = size
+        self.elements = [ valNode(self.name+str(i)) for i in range(self.size) ]
+    
+    def set_val(array):
+        if len(array) != self.size:
+            raise ValueError(f"Input size has a mismatch with the vector size ({self.size})")
             
             
 if __name__=='__main__':
