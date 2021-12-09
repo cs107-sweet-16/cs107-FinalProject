@@ -141,8 +141,6 @@ def tanh(a):
     else:
         raise TypeError
 
-def logistic(a):
-    pass
 
 def sqrt(a):
     """
@@ -526,7 +524,7 @@ class funcNode(Node):
 
             
             
-if __name__=='__main__':
+if __name__ == '__main__':
 
     
     # v = vector([1,2,3])

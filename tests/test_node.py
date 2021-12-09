@@ -6,6 +6,101 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 from node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
 
+def test_pos():
+    a = valNode('a')
+    a._set_val(1)
+    f = +a
+    f_val, f_grad = f.forward()
+    actual_f_val = (a.val)
+    actual_f_grad = {
+        'a': 1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_neg():
+    a = valNode('a')
+    a._set_val(1)
+    f = -a
+    f_val, f_grad = f.forward()
+    actual_f_val = -(a.val)
+    actual_f_grad = {
+        'a': -1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_sub_int():
+    a = valNode('a')
+    a._set_val(1)
+    f = a - 5
+    f_val, f_grad = f.forward()
+    actual_f_val = a.val - 5
+    actual_f_grad = {
+        'a': 1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_rsub_int():
+    a = valNode('a')
+    a._set_val(1)
+    f = 5 - a
+    f_val, f_grad = f.forward()
+    actual_f_val = 5 - a.val
+    actual_f_grad = {
+        'a': -1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_rsub_float():
+    a = valNode('a')
+    a._set_val(1)
+    f = a - 5.1
+    f_val, f_grad = f.forward()
+    actual_f_val = a.val - 5.1
+    actual_f_grad = {
+        'a': 1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+def test_rsub_float():
+    a = valNode('a')
+    a._set_val(1)
+    f = 5.1 - a
+    f_val, f_grad = f.forward()
+    actual_f_val = 5.1 - a.val
+    actual_f_grad = {
+        'a': -1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+        
 # Anna's addition:
 def test_cos_log():
 
