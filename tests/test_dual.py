@@ -2,8 +2,8 @@ import pytest
 import sys
 import os
 import numpy as np
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
-from dualnumber import Dualnumber
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+from autodiff.dualnumber import Dualnumber
 
 def test_sample():
     assert True == True

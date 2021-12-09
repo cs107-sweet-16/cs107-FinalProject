@@ -3,8 +3,8 @@ import sys
 import os
 import numpy as np
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
-from node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
 
 def test_valnode_str():
     node = valNode('aasdfasdjfaks')

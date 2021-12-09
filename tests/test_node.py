@@ -3,8 +3,8 @@ import sys
 import os
 import numpy as np
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
-from node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
 
 def test_pos():
     a = valNode('a')
@@ -234,7 +234,7 @@ def test_power_unit1():
     print("unit tests power:")
     a = valNode('a')
     f = a ** 3
-    a._set_val(-5)
+    a._set_val(5)
     f_val, f_grad = f.forward()
 
     assert np.isclose(f_val, a.val ** 3)
