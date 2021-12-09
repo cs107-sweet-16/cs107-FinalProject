@@ -415,10 +415,6 @@ class valNode(Node):
             Current value and empty derivative if number. Otherwise returns the value of the specified valNode and
             empty dictionary.
         """
-        if self.name != None:
-            return self.val, {self.name: 1}
-        else:
-            return self.val, {}
         if self.name is None:
             return self.val, {self.name: 0}
         return self.val, {self.name: 1}

@@ -12,7 +12,7 @@ def test_cos_log():
     a = valNode('a')
     b = valNode('b')
     c = valNode('c')
-    f = cos((a * b) / c) + c * log(a)
+    f = cos((a * b) / c) + c * ln(a)
     a._set_val(4)
     b._set_val(-1)
     c._set_val(10)
@@ -179,7 +179,7 @@ def test_exp_type_error():
 def test_log_unit1():
     print("unit tests log:")
     a = valNode('a')
-    f = log(a)
+    f = ln(a)
     a._set_val(10 / 3)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.log(a.val))
@@ -188,33 +188,33 @@ def test_log_unit1():
 def test_log_unit2():
     print("unit tests log:")
     a = valNode('a')
-    f = log(a)
+    f = ln(a)
     a._set_val(np.pi)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.log(a.val))
     assert np.isclose(f_grad['a'], 1 / a.val)
 
 def test_log_const():
-    f = log(10)
+    f = ln(10)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.log(10))
     assert np.isclose(f_grad[None], 0)
 
-    f = log(10.1)
+    f = ln(10.1)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.log(10.1))
     assert np.isclose(f_grad[None], 0)
 
 def test_log_type_error():
     with pytest.raises(TypeError):
-        log('a')
+        ln('a')
 
 def test_cos_log_multivar():
     print("testing cos(ab/c) + c*log(a)")
     a = valNode('a')
     b = valNode('b')
     c = valNode('c')
-    f = cos((a * b) / c) + c * log(a)
+    f = cos((a * b) / c) + c * ln(a)
     a._set_val(4)
     b._set_val(-1)
     c._set_val(10)
