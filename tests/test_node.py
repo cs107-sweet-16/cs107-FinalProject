@@ -3,7 +3,7 @@ import sys
 import os
 import numpy as np
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
-from node import sin, cos, tan, exp, log, valNode
+from node import sin, cos, tan, exp, ln, valNode
 
 def test_sin_multivar():
     print("testing: sin(ab + b) + c^a")
@@ -132,7 +132,7 @@ def test_log_multivar():
     c._set_val(np.pi/4)
     d._set_val(3)
 
-    f = d * log(a) + log(exp(b)) + log(cos(c))
+    f = d * ln(a) + ln(exp(b)) + ln(cos(c))
     f.forward_pass()
     f.reverse(1, 1)
     reverse_grads = {
@@ -202,7 +202,7 @@ def test_chain_rule():
     a = valNode('a')
     a._set_val(1.731)
 
-    f = exp(cos(log(2*(a + 5))))
+    f = exp(cos(ln(2*(a + 5))))
     f.forward_pass()
     f.reverse(1, 1)
     reverse_grads = {
