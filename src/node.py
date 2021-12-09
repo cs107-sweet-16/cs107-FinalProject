@@ -206,6 +206,18 @@ def exp(a):
     else:
         raise TypeError
 
+def log(a):
+    """
+    Alias for ln(a).
+
+    Args:
+        a (int, float, Node): Value to be passed through natural logarithm.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+    """
+
+    return ln(a)
 def ln(a):
     """
     Implements the natural logarithm to calculate values, derivative, and to contribute to a computational graph. Converts integers and floats to
