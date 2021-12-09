@@ -10,8 +10,7 @@ Welcome to autodiff's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   dual
-   operators
+   node
 
 
 Introduction
@@ -74,8 +73,7 @@ Finally, finish by importing dualnumber and it's operators
 .. code-block:: Python
 
   import numpy as np
-  from src.dualnumber import Dualnumber
-  from src.operatorsfunc import sin, cos, tan, exp, log
+   from node import sin, cos, tan, exp, log, valNode
 
 Forward mode
 ------------
@@ -83,42 +81,48 @@ Forward mode
 .. code-block:: Python
 
   ## EXAMPLE 1:
-  # set dual number 'x'
-  # first value (np.pi) is the real part at which we want to calculate the derivative and value of the function
-  # second value '1' is the dual part. In this case it is set to one, and will default to 1, but there is an option to change it.
-  x = Dualnumber(np.pi, der=1)
+    # testing cos(ab/c) + c*log(a), a = 4, b = -1, c = 10
 
-  # Next implement your function, by substituting in the defined dual number:
-  f = (tan(x)) - 2 ** x * exp(x)
+    # initialize the nodes as variables"
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
 
-  # The forward pass has now been executed and we can check the value of the function and it's derivative:
-  # value of the function:
-  print(f.val) # should equal approx -204.2160993
-  # value of the derivative:
-  print(f.der) # should equal approx -344.76791290283
+    # define the function:
+    f = cos((a * b) / c) + c * log(a)
+    a._set_val(4)
+    b._set_val(-1)
+    c._set_val(10)
 
-
-  ## EXAMPLE 2:
-  # Here is a second example, executed similarly to the first except with the initial dual part not equal to 1
-
-  # set the dual number, with dual = pi/4
-  x = Dualnumber(np.pi / 4, der=np.pi / 4)
-
-  # forward pass:
-  f = tan(x) + x
-
-  # check value:
-  print(f.val)
-
-  # The true derivative of a function for a dual number where the dual part is not equal to one, must be divided by the initial dual part.
-  # i.e. f.der/x.der = true derivative at x.val
-  # Check derivative:
-  print(f.der) # should equal approx: 3 * x.der or 3 * pi/4, where 3 is the actual derivative at x.val=np.pi/4
-
-  # Check value
-  print(f.val) # should be equal to np.pi / 4 + 1
+    # execute forward:
+    f_val, f_grad = f.forward()
 
 
+   # print the values of interest:
+   print("value of function f: ", f_val)
+   print("gradient with respect to a: ", f_grad[a])
+   print("gradient with respect to b: ", f_grad[b])
+   print("gradient with respect to c: ", f_grad[c])
+
+
+
+
+  ## EXAMPLE 2 with reverse mode:
+   # declare a as node
+    a = valNode('a')
+   # set a's value
+    a._set_val(1.731)
+
+   # set function f: a^2 + 3^a + (5/1) + a/2
+    f = a**2 + 3**a + 5/a + a/2
+
+   # execute forward pass
+    f.forward_pass()
+    f.reverse(1, 1)
+
+   # print the values of interest:
+   print("value of function f: ", f.val)
+   print("gradient at of a (1,1): ", a.der)
 
 Indices and tables
 ==================
