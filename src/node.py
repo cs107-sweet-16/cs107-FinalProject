@@ -4,6 +4,19 @@ import numpy as np
 
 
 def sin(a):
+    """
+    Implements sine to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through sine.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
     if isinstance(a, Node):
         return funcNode(np.sin, np.cos, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -14,6 +27,19 @@ def sin(a):
         raise TypeError
 
 def cos(a):
+    """
+    Implements cosine to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through cosine.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
     if isinstance(a, Node):
         return funcNode(np.cos, lambda x: -np.sin(x), None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -24,6 +50,19 @@ def cos(a):
         raise TypeError
 
 def tan(a):
+    """
+    Implements tangent to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through tan.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
     if isinstance(a, Node):
         return funcNode(np.tan, lambda x: 1/(np.cos(x))**2, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -34,6 +73,19 @@ def tan(a):
         raise TypeError
 
 def sinh(a):
+    """
+    Implements hyperbolic sine to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through hyperbolic sine.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
     if isinstance(a, Node):
         return funcNode(np.sinh, np.cosh, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -44,6 +96,19 @@ def sinh(a):
         raise TypeError
     
 def cosh(a):
+    """
+    Implements hyperbolic cosine to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through hyperbolic cosine.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
     if isinstance(a, Node):
         return funcNode(np.cosh, np.sinh, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -54,6 +119,19 @@ def cosh(a):
         raise TypeError
 
 def tanh(a):
+    """
+    Implements hyperbolic tangent to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through hyperbolic tangent.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
     if isinstance(a, Node):
         return funcNode(np.tanh, lambda x: 1-np.tanh(x)**2, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -67,6 +145,19 @@ def logistic(a):
     pass
 
 def sqrt(a):
+    """
+    Implements square-root to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be square-rooted.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
     if isinstance(a, Node):
         return funcNode(np.sqrt, lambda x: 0.5/np.sqrt(x), None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -78,6 +169,19 @@ def sqrt(a):
 
 
 def exp(a):
+    """
+    Implements exponential function to calculate values, derivatives, and to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be raised to the power of e.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+    """
     if isinstance(a, Node):
         return funcNode(np.exp, np.exp, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -88,6 +192,16 @@ def exp(a):
         raise TypeError
 
 def ln(a):
+    """
+    Implements the natural logarithm to calculate values, derivative, and to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be passed through natural logarithm.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+    """
     if isinstance(a, Node):
         return funcNode(np.log, lambda x: 1/x, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -99,14 +213,47 @@ def ln(a):
 
 def log(a,b):
     pass
-    
+
 
 class Node:
+    """
+    Node class that implements the following native python functions: addition, subtraction, multipliation,
+    division, unary operators, and power. Depending on the implemented funtions, Node will check if the inputs
+    are of type integer, float, or Node. If they are of tyep Node, then the value and it's derivative is computed
+    and stored in a dictionary. If the values are of type int or float, then the values are first convered to Node
+    class by calling valNode.
+
+    Attributes:
+        val (int, float): Current value of the variable.
+        der (int, float): Derivative of variable.
+        add: Addition implementation for Node class.
+        sub: Subtraction implementation for Node class.
+        mul: Multiplication implementation for Node class.
+        div: Division implementation for Node class.
+        pow: Power implementation for Node class.
+        pos: Positive unary operator for Node class.
+        neg: Negative unary operator for Node class.
+
+
+    """
+
     def __init__(self):
         # self.der = dict()
         pass
-    
+
+
     def __add__(self, other):
+        """Implements native python function for addition.
+
+        Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other (int, float, Node): value to be added.
+
+        Returns:
+            None
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -117,10 +264,23 @@ class Node:
         return funcNode(np.add,lambda x,y: 1, lambda x,y: 1, self, r)
     
     def __radd__(self, other):
+        """Implements native python function for reverse of addition. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be added.
+
+        """
         return self + other
     
     
     def __mul__(self, other):
+        """Implements native python function for multiplication. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be multiplied.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -135,10 +295,19 @@ class Node:
         
 
     def __neg__(self):
+        """
+        Implements native python unary operator for negation.
+        """
         return self * (-1)
 
 
     def __sub__(self, other):
+        """Implements native python function for subtraction. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be subtracted.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -152,6 +321,12 @@ class Node:
         return -self + other
     
     def __truediv__(self, other):
+        """Implements native python function for division. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value to be multiplied.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -170,6 +345,12 @@ class Node:
         return funcNode(np.divide, lambda x,y: 1/y, lambda x,y: -x/y/y, l, self)               
 
     def __pow__(self, other):
+        """Implements native python function for power. Calculates and inserts the derivative values into the
+        left and right nodes via valNode for construction of a computational graph.
+
+        Args:
+            other(int, float, Node): value of the exponent.
+        """
         if isinstance(other, Node):
             r = other
         elif isinstance(other, int) or isinstance(other, float):
@@ -188,11 +369,19 @@ class Node:
         return funcNode(np.power, lambda x,y: y*np.power(x,y-1), lambda x,y: np.power(x,y)*np.log(x), l, self)
         
     def __pos__(self):
+        """
+        Implements positive unary operator.
+        """
         return self
 
         
         
 class valNode(Node):
+    """
+    Sets variables as valNode class, which allows the users to auto-differentiate functions that use them. valNode class
+    overrides native python functions and unary operators, in order to construct a sequential computational graph. Sets
+    the initial derivative (0) for each assigned variable.
+    """
     def __init__(self, name = None):
         super().__init__()
         self.der = 0
@@ -201,15 +390,34 @@ class valNode(Node):
         #     self.der[name]=1
     
     def _set_val(self, val):
+        """
+        Sets the numeric value for a valNode.
+
+        Args:
+            val(int, float): numeric value of the valNode.
+        """
         self.val = val
+
     def __str__(self):
+        """
+        Prints information about a specified valNode.
+
+        Returns:
+            Returns the name of the valNode or it's value if the name is empty.
+        """
         return str(self.name) if self.name != None else str(self.val)
     
     def forward(self):
-        if self.name != None:
-            return self.val, {self.name: 1}
-        else:
-            return self.val, {}
+        """
+        Executes a simple forward pass for a single node.
+
+        Returns:
+            Current value and empty derivative if number. Otherwise returns the value of the specified valNode and
+            empty dictionary.
+        """
+        if self.name is None:
+            return self.val, {self.name: 0}
+        return self.val, {self.name: 1}
     
     def forward_pass(self):
         self.der = 0
