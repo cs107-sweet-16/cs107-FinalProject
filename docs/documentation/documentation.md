@@ -80,7 +80,7 @@ but in an effort to reduce software overhead and maximize learning for each
 step, we will elect to forgo a framework. Users may install autodiff (?? is this the name) through the following command line:
 
 ```
-pip install autodiff-aabj
+pip3 install autodiff-aabj
 ```
 
 Within a python terminal, you can then import the package:
