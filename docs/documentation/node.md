@@ -4,7 +4,7 @@
 ### class node.Node()
 Bases: `object`
 
-Node class that implements the following native python functions: addition, subtraction, multipliation,
+Node class that implements the following native python functions: addition, subtraction, multiplication,
 division, unary operators, and power. Depending on the implemented funtions, Node will check if the inputs
 are of type integer, float, or Node. If they are of tyep Node, then the value and it’s derivative is computed
 and stored in a dictionary. If the values are of type int or float, then the values are first convered to Node
@@ -133,8 +133,18 @@ Bases: `node.Node`
 
 
 #### forward()
+Executes a forward pass of the function, computing a computational graph. 
+
+* **Returns**
+    
+    Value of the function, and gradient of each variable.
 
 #### forward_pass()
+Executes a forward pass of the function, without a computational graph. 
+
+* **Returns**
+    
+    Value of the function, and gradient of each variable.
 
 #### reverse(partial, adjoint)
 
@@ -172,6 +182,7 @@ Alias for ln(a).
 
 
 ### node.log_ab(a, b)
+Returns logarithm of a with base b.
 
 ### node.logistic(a)
 
