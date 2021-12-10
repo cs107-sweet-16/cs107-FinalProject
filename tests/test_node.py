@@ -3,10 +3,335 @@ import sys
 import os
 import numpy as np
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
-from node import sin, cos, tan, exp, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
 
 
+
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
+
+def test_pos():
+    a = valNode('a')
+    a._set_val(1)
+    f = +a
+    f_val, f_grad = f.forward()
+    actual_f_val = (a.val)
+    actual_f_grad = {
+        'a': 1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_neg():
+    a = valNode('a')
+    a._set_val(1)
+    f = -a
+    f_val, f_grad = f.forward()
+    actual_f_val = -(a.val)
+    actual_f_grad = {
+        'a': -1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_sub_int():
+    a = valNode('a')
+    a._set_val(1)
+    f = a - 5
+    f_val, f_grad = f.forward()
+    actual_f_val = a.val - 5
+    actual_f_grad = {
+        'a': 1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_rsub_int():
+    a = valNode('a')
+    a._set_val(1)
+    f = 5 - a
+    f_val, f_grad = f.forward()
+    actual_f_val = 5 - a.val
+    actual_f_grad = {
+        'a': -1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_rsub_float():
+    a = valNode('a')
+    a._set_val(1)
+    f = a - 5.1
+    f_val, f_grad = f.forward()
+    actual_f_val = a.val - 5.1
+    actual_f_grad = {
+        'a': 1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+def test_rsub_float():
+    a = valNode('a')
+    a._set_val(1)
+    f = 5.1 - a
+    f_val, f_grad = f.forward()
+    actual_f_val = 5.1 - a.val
+    actual_f_grad = {
+        'a': -1,
+        None: 0,
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+        
+# Anna's addition:
+def test_cos_log():
+
+    print("testing cos(ab/c) + c*log(a)")
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
+    f = cos((a * b) / c) + c * ln(a)
+    a._set_val(4)
+    b._set_val(-1)
+    c._set_val(10)
+    f_val, f_grad = f.forward()
+    actual_f_val = np.cos((4 * -1) / 10) + 10 * np.log(4)
+    actual_f_grad = {
+        'a': (c.val / a.val) - b.val * np.sin((a.val * b.val) / c.val) / c.val,
+        'b': (-a.val * np.sin((a.val * b.val) / c.val)) / c.val,
+        'c': ((a.val * b.val * np.sin((a.val * b.val) / c.val) / (c.val ** 2)) + np.log(a.val))
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+def test_cos_unit1():
+    print("unit tests cos:")
+    a = valNode('a')
+    f = cos(a)
+    a._set_val(np.pi / 4)
+    f_val, f_grad = f.forward()
+
+    assert np.isclose(f_val, np.cos(a.val))
+    assert np.isclose(f_grad['a'], -np.sin(a.val))
+
+def test_cos_unit2():
+    print("unit tests cos:")
+    a = valNode('a')
+    f = cos(a)
+    a._set_val(-10.0)
+    f_val, f_grad = f.forward()
+
+    assert np.isclose(f_val, np.cos(a.val))
+    assert np.isclose(f_grad['a'], -np.sin(a.val))
+
+def test_cos_const():
+    f = cos(3)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.cos(3))
+    assert np.isclose(f_grad[None], 0)
+
+    f = cos(3.1)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.cos(3.1))
+    assert np.isclose(f_grad[None], 0)
+
+def test_cos_type_error():
+    with pytest.raises(TypeError):
+        cos('a')
+
+def test_sin_unit1():
+    print("unit tests sin:")
+    a = valNode('a')
+    f = sin(a)
+    a._set_val(-np.pi / 3)
+    f_val, f_grad = f.forward()
+
+    assert np.isclose(f_val, np.sin(a.val))
+    assert np.isclose(f_grad['a'], np.cos(a.val))
+
+def test_sin_unit2():
+    print("unit tests sin:")
+    a = valNode('a')
+    f = sin(a)
+    a._set_val(11.0)
+    f_val, f_grad = f.forward()
+
+    assert np.isclose(f_val, np.sin(a.val))
+    assert np.isclose(f_grad['a'], np.cos(a.val))
+
+def test_sin_const():
+    f = sin(3)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.sin(3))
+    assert np.isclose(f_grad[None], 0)
+
+    f = sin(3.1)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.sin(3.1))
+    assert np.isclose(f_grad[None], 0)
+
+def test_sin_type_error():
+    with pytest.raises(TypeError):
+        sin('a')
+
+def test_tan_unit1():
+    print("unit tests tan:")
+    a = valNode('a')
+    f = tan(a)
+    a._set_val(np.pi/6)
+    f_val, f_grad = f.forward()
+
+    assert np.isclose(f_val, np.tan(a.val))
+    assert np.isclose(f_grad['a'], 4/3)
+
+def test_tan_unit2():
+    print("unit tests tan:")
+    a = valNode('a')
+    f = tan(a)
+    a._set_val(-2.5)
+    f_val, f_grad = f.forward()
+
+    assert np.isclose(f_val, np.tan(a.val))
+    assert np.isclose(f_grad['a'], 1.55804)
+
+def test_tan_const():
+    f = tan(3)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.tan(3))
+    assert np.isclose(f_grad[None], 0)
+
+    f = tan(3.1)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.tan(3.1))
+    assert np.isclose(f_grad[None], 0)
+
+def test_tan_type_error():
+    with pytest.raises(TypeError):
+        tan('a')
+
+def test_power_unit1():
+    print("unit tests power:")
+    a = valNode('a')
+    f = a ** 3
+    a._set_val(5)
+    f_val, f_grad = f.forward()
+
+    assert np.isclose(f_val, a.val ** 3)
+    assert np.isclose(f_grad['a'], 3 * a.val ** 2)
+
+def test_power_unit2():
+    print("unit tests power:")
+    a = valNode('a')
+    f = a ** (1 / 2)
+    a._set_val(6.5)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, a.val ** (1 / 2))
+    assert np.isclose(f_grad['a'], (1 / 2) * (a.val) ** (-1 / 2))
+
+def test_exp_unit1():
+    a = valNode('a')
+    a._set_val(-5)
+    f = exp(a)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.exp(a.val))
+    assert np.isclose(f_grad['a'], np.exp(a.val))
+
+def test_exp_const():
+    f = exp(3)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.exp(3))
+    assert np.isclose(f_grad[None], 0)
+
+    f = exp(3.1)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.exp(3.1))
+    assert np.isclose(f_grad[None], 0)
+
+def test_exp_type_error():
+    with pytest.raises(TypeError):
+        exp('a')
+
+def test_log_unit1():
+    print("unit tests log:")
+    a = valNode('a')
+    f = ln(a)
+    a._set_val(10 / 3)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.log(a.val))
+    assert np.isclose(f_grad['a'], 1 / a.val)
+
+def test_log_unit2():
+    print("unit tests log:")
+    a = valNode('a')
+    f = ln(a)
+    a._set_val(np.pi)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.log(a.val))
+    assert np.isclose(f_grad['a'], 1 / a.val)
+
+def test_log_const():
+    f = ln(10)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.log(10))
+    assert np.isclose(f_grad[None], 0)
+
+    f = ln(10.1)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.log(10.1))
+    assert np.isclose(f_grad[None], 0)
+
+def test_log_type_error():
+    with pytest.raises(TypeError):
+        ln('a')
+
+def test_cos_log_multivar():
+    print("testing cos(ab/c) + c*log(a)")
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
+    f = cos((a * b) / c) + c * ln(a)
+    a._set_val(4)
+    b._set_val(-1)
+    c._set_val(10)
+    f_val, f_grad = f.forward()
+    actual_f_val = np.cos((4 * -1) / 10) + 10 * np.log(4)
+    actual_f_grad = {
+        'a': (c.val / a.val) - b.val * np.sin((a.val * b.val) / c.val) / c.val,
+        'b': (-a.val * np.sin((a.val * b.val) / c.val)) / c.val,
+        'c': ((a.val * b.val * np.sin((a.val * b.val) / c.val) / (c.val ** 2)) + np.log(a.val))
+    }
+
+    assert np.isclose(f_val, actual_f_val)
+
+    for var in f_grad:
+        assert np.isclose(f_grad[var], actual_f_grad[var])
+
+
+# original tests:
 def test_sin_multivar():
     print("testing: sin(ab + b) + c^a")
     a = valNode('a')
@@ -137,7 +462,7 @@ def test_log_multivar():
     c._set_val(np.pi / 4)
     d._set_val(3)
 
-    f = d * log(a) + log(exp(b)) + log(cos(c))
+    f = d * ln(a) + ln(exp(b)) + ln(cos(c))
     f.forward_pass()
     f.reverse(1, 1)
     reverse_grads = {
@@ -501,7 +826,11 @@ def test_chain_rule():
     a = valNode('a')
     a._set_val(1.731)
 
+<<<<<<< HEAD
     f = exp(cos(log(2 * (a + 5))))
+=======
+    f = exp(cos(ln(2*(a + 5))))
+>>>>>>> main
     f.forward_pass()
     f.reverse(1, 1)
     reverse_grads = {
