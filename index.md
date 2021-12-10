@@ -4,10 +4,11 @@ You can adapt this file completely to your liking, but it should at least
 contain the root `toctree` directive. -->
 # Welcome to autodiff’s documentation!
 
-# Contents:
-
+# API documentation:
 
 * node module
+* Dualnumber module
+* Operatorsfunc modeul
 
 
 # Introduction
@@ -49,7 +50,31 @@ derivative rules following the flow of the computation graph.
 
 # How to use
 
-To use the current version of our autodifferntiation python package, you must first ‘git clone’ on your terminal.
+## Installation
+
+### Option 1:
+
+We utilized PyPi to make our autodifferentiation package publicly available. Users may install autodiff (?? is this the name) through the following command line:
+
+```
+pip install autodiff
+```
+
+Within a python terminal, you can then import the package:
+
+```
+import autodiff
+```
+
+Alternatively, to pull commmon functions directly you may use the following import statement:
+
+```
+from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
+```
+
+### Option 2:
+
+In adition to pip installation, you may clone directly from the repository:
 
 ```
 git clone https://github.com/cs107-sweet-16/cs107-FinalProject.git
@@ -66,13 +91,27 @@ Finally, finish by importing dualnumber and it’s operators
 
 ```
 import numpy as np
- from node import sin, cos, tan, exp, log, valNode
+from node import sin, cos, tan, exp, log, valNode
 ```
+## Interaction
 
-## Forward mode
+Autodiff executes auto-differntiation by utilizting the concept of a computational graph. This graph is constructed during the execution of a forward pass. Simultaneously, the final value, and the respective gradient of each variable are also computed. Forward mode may be passed on some simple user-defined function, e.g. $f = 3x + 5^y$. The computational graph is constructed via Python's native operator precedence and an ordered dictionaries. As each step is executed per Python's operator precedence, the respective values and derivatives are stored within the dictionary. 
+
+### Forward mode
+
+The general workflow for this project consists of the following:
+1. Determining some function of interest
+2. Initializing each unique variable 
+3. Defining the function
+4. Setting the variable values
+5. Executing forward mode
+6. Executing reverse pass
+
+It is important to note that may of these steps must be defined in order. Particularly the following two considerations:
+1. The variables must be set as nodes prior to function definition. This ensures that as the function is execute the values will be simultaneously calculated and the computational graph will be constructed.
+2. Forward mode is executed prior to reverse mode. For reverse() to be completed, the gradients at each node and the final gradient must be computed beforehand, through forward(). Otherwise, reverse() fails.
 
 ```
-## EXAMPLE 1:
   # testing cos(ab/c) + c*log(a), a = 4, b = -1, c = 10
 
   # initialize the nodes as variables"
@@ -82,9 +121,9 @@ import numpy as np
 
   # define the function:
   f = cos((a * b) / c) + c * log(a)
-  a._set_val(4)
-  b._set_val(-1)
-  c._set_val(10)
+  a.set_val(4)
+  b.set_val(-1)
+  c.set_val(10)
 
   # execute forward:
   f_val, f_grad = f.forward()
@@ -96,7 +135,11 @@ import numpy as np
  print("gradient with respect to b: ", f_grad[b])
  print("gradient with respect to c: ", f_grad[c])
 
+```
 
+### Forward and Reverse Mode
+
+```
 
 
 ## EXAMPLE 2 with reverse mode:
@@ -110,20 +153,13 @@ import numpy as np
 
  # execute forward pass
   f.forward_pass()
-  f.reverse(1, 1)
+  f_val, f_grad = f.reverse(1, 1)
 
  # print the values of interest:
- print("value of function f: ", f.val)
- print("gradient at of a (1,1): ", a.der)
+ print("value of function f: ", f_val)
+ print("gradient at of a (1,1): ", f_der)
 ```
 
-# Indices and tables
 
 
-* Index
 
-
-* Module Index
-
-
-* Search Page
