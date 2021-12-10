@@ -75,7 +75,7 @@ We will used PyPI to distribute our package.
 We will used a library called `twine` to help us package and distribute our
 package over PyPI. We will follow this helpful tutorial
 https://packaging.python.org/tutorials/packaging-projects/, provides a detailed
-guide on how to setup the software structure. Using a framework may be helpful,
+guide on how to setup the structure. Using a framework may be helpful,
 but in an effort to reduce software overhead and maximize learning for each
 step, we will elect to forgo a framework. Users may install autodiff (?? is this the name) through the following command line:
 
@@ -214,7 +214,7 @@ documentation will live in a directory named `docs`, which will go into
 technical detail how each user-facing function is used, and any examples if
 appropriate.
 
-`
+```
 CS107-FinalProject/
   autodiff/
     Dualnumber.py
@@ -233,7 +233,7 @@ CS107-FinalProject/
     test_dual.py
     test_node_errs.py
     test_operatorsfunc.py
-`
+```
 
 ### Modules
 
