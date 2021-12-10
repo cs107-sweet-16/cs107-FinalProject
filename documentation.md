@@ -242,7 +242,7 @@ few modules, with the most core functionality in a module named `node.py`.  This
 module will provides us with the basic functionality of being able to
 differentiate on a defined set of elementary operations and functions. 
 
-In addition to `node.py`, we also have `Dualnumber.py` and `Operatorsfunc.py` which has our dated implementation of autodiff in them. Dualnumber.py` constructs a Dualnumber class, with native Python functions. `Operatorsfunc.py` consists of extended functions, such as sinusoidial, to extend the functionality of `Daulnumber.py`. 
+In addition to `node.py`, we also have `Dualnumber.py` and `Operatorsfunc.py` which has our dated implementation of autodiff in them. `Dualnumber.py` constructs a Dualnumber class, with native Python functions. `Operatorsfunc.py` consists of extended functions, such as sinusoidial, to extend the functionality of `Daulnumber.py`. 
 
 ### Test Suite
 
