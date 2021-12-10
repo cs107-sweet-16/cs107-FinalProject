@@ -4,7 +4,7 @@ You can adapt this file completely to your liking, but it should at least
 contain the root `toctree` directive. -->
 # Welcome to autodiff’s documentation!
 
-# API documentation:
+### Extended Documentation:
 
 * node module
 * Dualnumber module
@@ -120,7 +120,7 @@ from node import sin, cos, tan, exp, log, valNode
 
 Autodiff executes auto-differntiation by utilizting the concept of a computational graph. This graph is constructed during the execution of a forward pass. Simultaneously, the final value, and the respective gradient of each variable are also computed. Forward mode may be passed on some simple user-defined function, e.g. $$ f = 3x + 5^y $$. The computational graph is constructed via Python's native operator precedence and an ordered dictionaries. As each step is executed per Python's operator precedence, the respective values and derivatives are stored within the dictionary. The code for this may be found under the directory `autodiff/`
 
-### Forward mode
+### Forward Mode Example
 
 The general workflow for this project consists of the following:
 1. Determining some function of interest
@@ -160,7 +160,7 @@ It is important to note that may of these steps must be defined in order. Partic
 
 ```
 
-### Forward and Reverse Mode
+### Forward and Reverse Mode Example
 
 ```
 
@@ -237,22 +237,19 @@ CS107-FinalProject/
 
 ### Modules
 
-We will have one package, named `autodiff`. Within this module there may be a
-few modules, with the most core functionality in a module named `grad`.  This
-module will provide us with the basic functionality of being able to
-differentiate on a defined set of elementary operations.  To help define the
-scope of our project, we will determine ahead of time which elementary
-functions can be used to integrate with our library. In order to accomplish
-this, we will create a second module, `primitives`, which houses some of the
-elementary operations we define in the implementation section, as well as the 
-symbol class.
+We will have one package, named `autodiff`. Within this module there are a
+few modules, with the most core functionality in a module named `node.py`.  This
+module will provides us with the basic functionality of being able to
+differentiate on a defined set of elementary operations and functions. 
+
+In addition to `node.py`, we also have `Dualnumber.py` and `Operatorsfunc.py` which has our dated implementation of autodiff in them. Dualnumber.py` constructs a Dualnumber class, with native Python functions. `Operatorsfunc.py` consists of extended functions, such as sinusoidial, to extend the functionality of `Daulnumber.py`. 
 
 ### Test Suite
 
-Our test suite will live in a separate directory called `tests`. We will use
+Our test suite lives in a separate directory called `tests`. We will use
 TravisCI to run continuous integration, and make sure we do not accidentally
 introduce regressions in our code when we change or add functionality. CodeCov
-will be used to ensure that any new code that we write is properly tested and
+is used to ensure that any new code that we write is properly tested and
 accounted for.
 
 ### Documentation
@@ -261,89 +258,64 @@ the `docs/` directory:
 ```
 sphinx-build source/ build/
 ```
-
 The generated HTML files are viewable as `cs107-FinalProject/docs/build/index.html`.
     
 
 ## Implementation 
-We will have a few core data structures:
+We have a few core data structures:
 * Computational graph
 * Custom classes for instantiating dual
 numbers and performing forward and backward passes.
 
 ### Computational Graph
-The computational graph will consist of node and edge data structures. 
+The computational graph consists of node and edge data structures. 
 The graph is bidirectional since we plan to implement both the backward pass and forward pass 
 implementations.
 The nodes will store data in tuples.
 
-### Symbol Class 
-The symbol class is a user-facing data structure which represents 
-an abstraction of a variable. It will use dual numbers under the hood
-that run on the computational graph.
+### class node.Node()
+Bases: `object`
 
-### Dual Number Class 
-We will begin by constructing a dualNumber() class that
-deals with the properties of dual numbers. It will take a real value and dual
-value as the initial input. The dualNumber class will have the following
-algebraic operations, along with their reverse counterparts (not shown). 
+Node class that implements the following native python functions: addition, subtraction, multipliation,
+division, unary operators, and power. Depending on the implemented funtions, Node will check if the inputs are of type integer, float, or Node. If they are of type Node, then the value and it’s derivative is computed and stored in a dictionary. If the values are of type int or float, then the values are first convered to Node class by calling valNode.
 
-```py
-class Dualnumber:
-    def __init__(self, a, der=1):
-        self.val = a
-        self.der = der
+### class node.valNode(name=None)
+Bases: `node.Node`
 
-    def set_dual(self, dual):
-        self.der = dual
+Sets variables as valNode class, which allows the users to auto-differentiate functions that use them. valNode class overrides native python functions and unary operators, in order to construct a sequential computational graph. Sets the initial derivative (0) for each assigned variable.
 
-    def __add__(self, other):
-
-    def __mul__(self, other):
-
-    def __sub__(self, other):
-
-    def __truediv__(self, other):
-
-    def __pow__(self, other):
-
-    def __neg__(self, other):
-    
-    def __pos__(self, other):
-    
-    def __eq__(self, other):
-```
+* forward() - Executes a simple forward pass for a single function. Returns respective values and gradients.
+* reverse() - Executes a reverse pass for a function, utilizing the computational graph.Returns respective values and gradients.
 
 ### Primitives
-We will have a module that is dedicated to housing elementary operations. 
+Node also contains elementary operations. 
 We will maintain an updated list of these operations:
-1. `sin`
-2. `cos`
-3. `pow`
-4. `exp`
-5. `log`
 
-### Forward Pass 
-The exact details of the forward pass algorithm are currently abstracted,
-but we desire to implement a forward mode function which can take in a function,
-and utilize dual numbers and computational graph
-to compute the resulting value and respective gradients.
+* sin: sine function
+* cos: cosine function
+* tan: tangent function
+* sinh: hyperbolic sine function
+* cosh: hyperbolic cosine function
+* tanh: hyperbolic tangent function
+* arccos: inverse cosine function
+* arcsin: inverse sine function
+* arctan: inverse tangent function
+* exp: natural exponent
+* log: logarithm base e
+* ln: logarithm base e
+* logab: logarithm base 'b'
+* sqrt: square root
+* power: power function
+* neg: standard unary negative operation
+* pos: standard unary positive operation
 
-### Reverse Pass
-The exact details of the reverse pass algorithm are currently abstracted,
-but we desire to implement a reverse mode function which will implement
-the backpropagation step, utilizing the saved results from our forward pass.
+## Dependendies
 
-## Future Features
-Our future features include the following:
-* Fine-tuning our forward pass to include a computational graph
-* Adding additional functions like the inverse of sinusoidal functions, and other operations
-* Utilizing the computational graph to execute a backward pass
-* Creating more advanced documentation through Sphinx 
-* Releasing the package on PyPi for installation through pip
-* Expand our testing suite to accomodate additional features
+Our primary dependency within our working modules is `numpy`. `Numpy` was used to calculate values for non-native elementary functions, such as the sinusoidal classes. However we used numerous packages throughout our project. These include PyPi to form our project into a package, and codecove to determine code coverage.
 
-We expect the most difficult part of our future features to be constructing the computational graph. We expect to accomplish this through ordered dictionaries, where we will add lines of code to each defined function, so when they are called upon we can access the operations and numbers in order. We will then use the operations and numbers to contruct the nodes and edges of a computational graph, which will subsequently be used fto perform the backward pass. 
+
+
+
 
 
 
