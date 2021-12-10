@@ -134,7 +134,7 @@ It is important to note that may of these steps must be defined in order. Partic
 1. The variables must be set as nodes prior to function definition. This ensures that as the function is execute the values will be simultaneously calculated and the computational graph will be constructed.
 2. Forward mode is executed prior to reverse mode. For reverse() to be completed, the gradients at each node and the final gradient must be computed beforehand, through forward(). Otherwise, reverse() fails.
 
-```
+```py
   # testing cos(ab/c) + c*log(a), a = 4, b = -1, c = 10
 
   # initialize the nodes as variables"
@@ -162,7 +162,7 @@ It is important to note that may of these steps must be defined in order. Partic
 
 ### Forward and Reverse Mode Example
 
-```
+```py
 
 
 ## EXAMPLE 2 with reverse mode:
