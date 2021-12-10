@@ -1,6 +1,4 @@
-import numpy as np 
-
-
+import numpy as np
 
 
 def sin(a):
@@ -26,6 +24,7 @@ def sin(a):
     else:
         raise TypeError
 
+
 def cos(a):
     """
     Implements cosine to contribute to a computational graph. Converts integers and floats to
@@ -48,6 +47,7 @@ def cos(a):
         return n
     else:
         raise TypeError
+
 
 def tan(a):
     """
@@ -72,6 +72,7 @@ def tan(a):
     else:
         raise TypeError
 
+
 def sinh(a):
     """
     Implements hyperbolic sine to contribute to a computational graph. Converts integers and floats to
@@ -94,7 +95,8 @@ def sinh(a):
         return n
     else:
         raise TypeError
-    
+
+
 def cosh(a):
     """
     Implements hyperbolic cosine to contribute to a computational graph. Converts integers and floats to
@@ -118,6 +120,7 @@ def cosh(a):
     else:
         raise TypeError
 
+
 def tanh(a):
     """
     Implements hyperbolic tangent to contribute to a computational graph. Converts integers and floats to
@@ -133,7 +136,7 @@ def tanh(a):
         TypeError if value is not of type int, float, or Node.
         """
     if isinstance(a, Node):
-        return funcNode(np.tanh, lambda x: 1-np.tanh(x)**2, None, a, None)
+        return funcNode(np.tanh, lambda x: 1 - np.tanh(x) ** 2, None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
         n = valNode()
         n._set_val(np.tanh(a))
@@ -157,7 +160,7 @@ def sqrt(a):
         TypeError if value is not of type int, float, or Node.
         """
     if isinstance(a, Node):
-        return funcNode(np.sqrt, lambda x: 0.5/np.sqrt(x), None, a, None)
+        return funcNode(np.sqrt, lambda x: 0.5 / np.sqrt(x), None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
         n = valNode()
         n._set_val(np.sqrt(a))
@@ -165,7 +168,21 @@ def sqrt(a):
     else:
         raise TypeError
 
+
 def logistic(a):
+    """
+        Implements logistic function to contribute to a computational graph. Converts integers and floats to
+        Node's, and inserts derivatives into the computational graph.
+
+        Args:
+            a (int, float, Node): Value to be calculated through tan.
+
+        Returns:
+            Node with values and derivatives along with a corresponding computational graph.
+
+        Raises:
+            TypeError if value is not of type int, float, or Node.
+            """
     if isinstance(a, Node):
         return funcNode(_logistic, lambda x: _logistic(x) * (1 - _logistic(x)), None, a, None)
     elif isinstance(a, int) or isinstance(a, float):
@@ -177,8 +194,15 @@ def logistic(a):
 
 
 def _logistic(a):
-    return (np.tanh(a / 2) + 1) * 0.5
+    """
+    Helper function for logistic, implements logistic function for int or float data type.
+    Args:
+        a (int, float, Node): Real number whose logistic function is to be calculated.
 
+    Returns:
+        Logistic value of the argument a.
+    """
+    return (np.tanh(a / 2) + 1) * 0.5
 
 
 def exp(a):
@@ -204,6 +228,7 @@ def exp(a):
     else:
         raise TypeError
 
+
 def log(a):
     """
     Alias for ln(a).
@@ -216,6 +241,8 @@ def log(a):
     """
 
     return ln(a)
+
+
 def ln(a):
     """
     Implements the natural logarithm to calculate values, derivative, and to contribute to a computational graph. Converts integers and floats to
@@ -236,11 +263,22 @@ def ln(a):
     else:
         raise TypeError
 
+
 def _log_ab(arg, base=np.exp(1)):
     return np.log(arg) / np.log(base)
 
 
 def log_ab(a, b):
+    """
+        Implements the logarithm with arbitrary base b for argument a to calculate values, derivative, and to contribute
+        to a computational graph. Converts integers and floats to Node's, and inserts derivatives into the computational graph.
+
+        Args:
+            a (int, float, Node): The Argument of logarithm.
+            b (int, float, Node): The base of the logarithma
+        Returns:
+            Node with values and derivatives along with a corresponding computational graph.
+        """
     if isinstance(a, Node) and isinstance(b, Node):
         return funcNode(_log_ab, lambda x, y: (1 / np.log(y)) * 1 / x,
                         lambda x, y: (-(1 / y) * np.log(x) * ((1 / np.log(y)) ** 2)),
@@ -412,14 +450,15 @@ class Node:
         """
         return self
 
-        
+
 class valNode(Node):
     """
     Sets variables as valNode class, which allows the users to auto-differentiate functions that use them. valNode class
     overrides native python functions and unary operators, in order to construct a sequential computational graph. Sets
     the initial derivative (0) for each assigned variable.
     """
-    def __init__(self, name = None):
+
+    def __init__(self, name=None):
         super().__init__()
         self.der = 0
         self.name = name
@@ -434,6 +473,15 @@ class valNode(Node):
             val(int, float): numeric value of the valNode.
         """
         self.val = val
+
+    def set_val(self, val):
+        """
+        Alias for _set_val(self, val).
+
+        Args:
+            val(int, float): numeric value of the valNode.
+
+        """
 
     def __str__(self):
         """
@@ -455,7 +503,7 @@ class valNode(Node):
         if self.name is None:
             return self.val, {self.name: 0}
         return self.val, {self.name: 1}
-    
+
     def forward_pass(self):
         self.der = 0
         return self.val
@@ -522,20 +570,18 @@ class funcNode(Node):
 
         # return self.val
 
-            
-            
-if __name__ == '__main__':
 
-    
+if __name__ == '__main__':
     # v = vector([1,2,3])
-    
+
     def f(v):
         '''
             f takes a size=3 vector and output a size=2 vector
         '''
-        f1 = sin(ln(v[0]))+tan(v[0]**2+v[0]*v[1]+v[2])
-        f2 = ln(sin(exp(v[0])+v[1])) + exp(v[1]) + v[2]
-        return f1,f2
+        f1 = sin(ln(v[0])) + tan(v[0] ** 2 + v[0] * v[1] + v[2])
+        f2 = ln(sin(exp(v[0]) + v[1])) + exp(v[1]) + v[2]
+        return f1, f2
+
 
     '''x = valNode('x')
     y = valNode('y')
@@ -630,7 +676,3 @@ if __name__ == '__main__':
 
     for var in actual_f_grad.keys():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])'''
-
-
-
-

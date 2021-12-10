@@ -3,7 +3,7 @@ import sys
 import os
 import numpy as np
 
-# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
 from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
 
 
@@ -269,6 +269,14 @@ def test_power_unit2():
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, a.val ** (1 / 2))
     assert np.isclose(f_grad['a'], (1 / 2) * (a.val) ** (-1 / 2))
+
+
+def test_power_type_error():
+    with pytest.raises(TypeError):
+        a = valNode('a')
+        a._set_val("2")
+        f = a ** (1 / 2)
+        f.forward()
 
 
 def test_exp_unit1():
@@ -575,8 +583,22 @@ def test_logistic():
     }
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
-        # print(actual_f_grad[var], reverse_grads[var])
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_logistic_const():
+    f = logistic(10)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, 0.5 * (1 + np.tanh(0.5 * 10)))
+    assert np.isclose(f_grad[None], 0)
+
+
+def test_logistic_type_error():
+    with pytest.raises(TypeError):
+        a = valNode('a')
+        a._set_val("2")
+        f = logistic(a)
+        f.forward()
 
 
 def test_log_ab_both_nodes():
@@ -661,6 +683,16 @@ def test_log_ab_base_arg_int():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
+def test_log_ab_type_error():
+    with pytest.raises(TypeError):
+        a = valNode('a')
+        a._set_val("2")
+        b = valNode("b")
+        b._set_val(4)
+        f = log_ab(a, b)
+        f.forward()
+
+
 def test_sinh1():
     a = valNode('a')
     b = valNode('b')
@@ -713,6 +745,21 @@ def test_sinh2():
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_sinh_const():
+    f = sinh(10)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.sinh(10))
+    assert np.isclose(f_grad[None], 0)
+
+
+def test_sinh_type_error():
+    with pytest.raises(TypeError):
+        a = valNode('a')
+        a._set_val("2")
+        f = sinh(a)
+        f.forward()
 
 
 def test_cosh1():
@@ -769,6 +816,21 @@ def test_cosh2():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
+def test_cosh_const():
+    f = cosh(10)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.cosh(10))
+    assert np.isclose(f_grad[None], 0)
+
+
+def test_cosh_type_error():
+    with pytest.raises(TypeError):
+        a = valNode('a')
+        a._set_val("2")
+        f = cosh(a)
+        f.forward()
+
+
 def test_tanh1():
     a = valNode('a')
     b = valNode('b')
@@ -823,6 +885,21 @@ def test_tanh2():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
+def test_tanh_const():
+    f = tanh(10)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.tanh(10))
+    assert np.isclose(f_grad[None], 0)
+
+
+def test_tanh_type_error():
+    with pytest.raises(TypeError):
+        a = valNode('a')
+        a._set_val("2")
+        f = tanh(a)
+        f.forward()
+
+
 def test_sqrt():
     a = valNode('a')
     b = valNode('b')
@@ -847,6 +924,21 @@ def test_sqrt():
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_sqrt_const():
+    f = sqrt(10)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.sqrt(10))
+    assert np.isclose(f_grad[None], 0)
+
+
+def test_sqrt_type_error():
+    with pytest.raises(TypeError):
+        a = valNode('a')
+        a._set_val("2")
+        f = sinh(a)
+        f.forward()
 
 
 def test_chain_rule():
