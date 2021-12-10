@@ -382,9 +382,9 @@ def test_sin_multivar():
         'b': (a.val + 1) * np.cos((a.val + 1) * b.val),
         'c': (a.val) * (c.val) ** (a.val - 1)
     }
-    f.forward_pass()
+    f.forward()
     # print(f.val, )
-    f.reverse(1, 1)
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -419,9 +419,9 @@ def test_sin_multivar_2():
         assert np.isclose(f_grad[var], actual_f_grad[var])
     #
 
-    f.forward_pass()
+    f.forward()
     # print(f.val, )
-    f.reverse(1, 1)
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der
@@ -449,9 +449,9 @@ def test_exp_multivar():
         'c': -(a.val * np.exp(a.val / c.val)) / (c.val ** 2),
     }
 
-    f.forward_pass()
+    f.forward()
     # print(f.val, )
-    f.reverse(1, 1)
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -469,8 +469,8 @@ def test_tan_multivar():
     b._set_val(2)
 
     f = tan(a) - exp(b)
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der
@@ -497,8 +497,8 @@ def test_log_multivar():
     d._set_val(3)
 
     f = d * ln(a) + ln(exp(b)) + ln(cos(c))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -526,8 +526,8 @@ def test_tan_multivar2():
     b._set_val(np.pi)
 
     f = tan(exp(a / b))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -548,8 +548,8 @@ def test_pow_div_multivar():
     a._set_val(1.731)
 
     f = a ** 2 + 3 ** a + 5 / a + a / 2
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
     }
@@ -570,8 +570,8 @@ def test_logistic():
     b._set_val(3)
 
     f = logistic(sin(a) + cos(b))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der
@@ -608,8 +608,8 @@ def test_log_ab_both_nodes():
     b._set_val(3)
 
     f = log_ab(a + b, a * b)
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der
@@ -631,8 +631,8 @@ def test_log_ab_base_int_arg_node():
     a._set_val(np.exp(2))
 
     f = sin(log_ab(a, 3))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
     }
@@ -650,8 +650,8 @@ def test_log_ab_base_Node_arg_int():
     a._set_val(np.exp(2))
 
     f = sin(log_ab(3, a))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der
     }
@@ -669,8 +669,8 @@ def test_log_ab_base_arg_int():
     a._set_val(np.exp(2))
 
     f = sin(log_ab(log_ab(np.exp(3), np.exp(1)), a))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der
     }
@@ -703,8 +703,8 @@ def test_sinh1():
     c._set_val(np.pi / 4)
 
     f = log(sinh(a)) + log(exp(b)) + log(cos(c))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -730,8 +730,8 @@ def test_sinh2():
     b._set_val(2)
 
     f = tan(sinh(a) * log(b))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -772,8 +772,8 @@ def test_cosh1():
     c._set_val(np.pi / 4)
 
     f = log(cosh(a)) + log(exp(b)) + log(cos(c))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -799,8 +799,8 @@ def test_cosh2():
     b._set_val(2)
 
     f = tan(cosh(a) * log(b))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -841,8 +841,8 @@ def test_tanh1():
     c._set_val(np.pi / 4)
 
     f = log(tanh(a)) + log(exp(b)) + log(cos(c))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -868,8 +868,8 @@ def test_tanh2():
     b._set_val(2)
 
     f = tan(tanh(a) * log(b))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -908,8 +908,8 @@ def test_sqrt():
     b._set_val(2)
 
     f = sqrt(tan(tanh(a) * log(b)))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
         'b': b.der,
@@ -946,8 +946,8 @@ def test_chain_rule():
     a._set_val(1.731)
 
     f = exp(cos(ln(2 * (a + 5))))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     reverse_grads = {
         'a': a.der,
     }
@@ -969,8 +969,8 @@ def test_complex_func1():
     b._set_val(np.exp(1))
 
     f = sin(tan(a) / log(b))
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     actual_f_val = np.sin(np.tan(a.val) / np.log(b.val))
     assert f.val == actual_f_val
     actual_f_grad = {
@@ -994,8 +994,8 @@ def test_complex_func2():
     b._set_val(2)
 
     f = (a + b) ** 2 + log(a) * sin(b)
-    f.forward_pass()
-    f.reverse(1, 1)
+    f.forward()
+    f.reverse()
     actual_f_val = (a.val + b.val) ** 2 + np.sin(b.val) * np.log(a.val)
     assert f.val == actual_f_val
     actual_f_grad = {
