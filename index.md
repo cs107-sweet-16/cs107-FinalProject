@@ -69,7 +69,15 @@ Note that when we calculate "elementary function derivative", we made use of the
 
 ### Option 1:
 
-We utilized PyPi to make our autodifferentiation package publicly available. Users may install autodiff (?? is this the name) through the following command line:
+#
+### Distribution 
+We will used PyPI to distribute our package.   
+We will used a library called `twine` to help us package and distribute our
+package over PyPI. We will follow this helpful tutorial
+https://packaging.python.org/tutorials/packaging-projects/, provides a detailed
+guide on how to setup the software structure. Using a framework may be helpful,
+but in an effort to reduce software overhead and maximize learning for each
+step, we will elect to forgo a framework. Users may install autodiff (?? is this the name) through the following command line:
 
 ```
 pip install autodiff
@@ -256,14 +264,6 @@ sphinx-build source/ build/
 
 The generated HTML files are viewable as `cs107-FinalProject/docs/build/index.html`.
     
-### Distribution 
-We will use PyPI to distribute our package.   
-We will use a library called `twine` to help us package and distribute our
-package over PyPI. We will follow this helpful tutorial
-https://packaging.python.org/tutorials/packaging-projects/, provides a detailed
-guide on how to setup the software structure. Using a framework may be helpful,
-but in an effort to reduce software overhead and maximize learning for each
-step, we will elect to forgo a framework.
 
 ## Implementation 
 We will have a few core data structures:
