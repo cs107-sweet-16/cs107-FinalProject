@@ -482,6 +482,7 @@ class valNode(Node):
             val(int, float): numeric value of the valNode.
 
         """
+        self._set_val(val)
 
     def __str__(self):
         """
