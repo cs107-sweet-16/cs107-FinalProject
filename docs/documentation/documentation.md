@@ -325,9 +325,45 @@ Our primary dependency within our working modules is `numpy`. `Numpy` was used
 to calculate values for non-native elementary functions, such as the sinusoidal
 classes. 
 
+## Broader Impact and Inclusivity Statement
 
+### Broader Impact
 
+Automatic differentiation is used in many areas of scientific research and engineering. While
+autodifferentiation itself is not a new topic (and has been implemented many times), creating and
+building a autodifferentiation library is useful for understanding the concepts and elucidates
+how ubiquitously it can be used. Additionally, maintaining an open source library is good practice
+for understanding how to serve the software development community - writing clean, performant code,
+adhering to software development best practices, and being open to consider future extensions and
+migration of code standards. 
 
+As in all math, part of the nature of autodifferentiation is that it can be used in both socially good 
+and harmful ways. There are real-world consequences, for example, of using autodifferentiation to 
+train a machine learning model for a specific purpose, particularly on user privacy. To that end, 
+we encourage user feedback on the usage of the our library, and to open a conversation on its 
+potential misuse.
+
+### Inclusitivity
+
+The authors of the autodiff library welcome everyone and encourage participation and discussion of how to use
+autodifferentiation, regardless of any social status, standing, or nature. These include (but 
+are not limited to):
+* age, culture, ethnicity, gender, natioanlity, politics, race, sex, sexual orientation,
+socioeconomic status
+
+This community fosters mutual respect and tolerance - while we cannot hope to
+be knowledgable about everything, we can hope to be better, and more informed
+than when we began. Our autodiff library is not meant to be rigid body, but
+rather an evolving piece of software that changes along with its community.
+
+Both contributors and core developers of the library are expected to hold each other accountable,
+and to open conversation with optimism, and not of expectation. To this end,
+we will have pull requests and issues reviewed in a thorough and unassuming manner. 
+
+We encourage any and all underrepresented groups interested in software or learning more about 
+how our code works to submit thoughtful tickets, raise issues, and ask for feature requests
+to help increase the inclusivity of our wording, and make it more accessible to experience and inexperienced
+Python practitioners alike, native and non-native English speakers as well.
 
 
 
