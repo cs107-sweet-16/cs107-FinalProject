@@ -4,8 +4,8 @@ import os
 import numpy as np
 
 # sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
-from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode, \
-    vector, variables
+from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, arcsin, arccos, \
+    arctan, valNode, vector, variables
 
 
 def test_pos():
@@ -694,6 +694,128 @@ def test_log_ab_type_error2():
         a.set_val(2)
         log_ab("2", a)
 
+
+def test_arcsin1():
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
+
+    a._set_val(.5)
+    b._set_val(2)
+    c._set_val(np.pi / 4)
+
+    f = log(arcsin(a)) + log(exp(b)) + log(cos(c))
+    f.forward()
+    f.reverse()
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der,
+        'c': c.der,
+    }
+
+    actual_f_val = np.log(np.arcsin(a.val)) + np.log(np.exp(b.val)) + np.log(np.cos(c.val))
+    actual_f_grad = {
+        'a': 1 / (np.sqrt(1-a.val*a.val)*np.arcsin(a.val)),
+        'b': 1,
+        'c': -np.tan(c.val),
+    }
+    assert f.val == actual_f_val
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_arcsin_const():
+    f = arcsin(0)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.arcsin(0))
+    assert np.isclose(f_grad[None], 0)
+
+
+def test_arcsin_type_error():
+    with pytest.raises(TypeError):
+        arcsin("a")
+
+
+def test_arccos():
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
+
+    a._set_val(.5)
+    b._set_val(2)
+    c._set_val(np.pi / 4)
+
+    f = log(arccos(a)) + log(exp(b)) + log(cos(c))
+    f.forward()
+    f.reverse()
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der,
+        'c': c.der,
+    }
+
+    actual_f_val = np.log(np.arccos(a.val)) + np.log(np.exp(b.val)) + np.log(np.cos(c.val))
+    actual_f_grad = {
+        'a': -1 / (np.sqrt(1-a.val*a.val)*np.arccos(a.val)),
+        'b': 1,
+        'c': -np.tan(c.val),
+    }
+    assert f.val == actual_f_val
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_arccos_const():
+    f = arccos(0)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.arccos(0))
+    assert np.isclose(f_grad[None], 0)
+
+
+def test_arccos_type_error():
+    with pytest.raises(TypeError):
+        arccos("a")
+
+
+def test_arctan():
+    a = valNode('a')
+    b = valNode('b')
+    c = valNode('c')
+
+    a._set_val(1)
+    b._set_val(2)
+    c._set_val(np.pi / 4)
+
+    f = log(arctan(a)) + log(exp(b)) + log(cos(c))
+    f.forward()
+    f.reverse()
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der,
+        'c': c.der,
+    }
+
+    actual_f_val = np.log(np.arctan(a.val)) + np.log(np.exp(b.val)) + np.log(np.cos(c.val))
+    actual_f_grad = {
+        'a': 1 / ((1+a.val*a.val)*np.arctan(a.val)),
+        'b': 1,
+        'c': -np.tan(c.val),
+    }
+    assert f.val == actual_f_val
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_arctan_const():
+    f = arctan(1)
+    f_val, f_grad = f.forward()
+    assert np.isclose(f_val, np.arctan(1))
+    assert np.isclose(f_grad[None], 0)
+
+
+def test_arctan_type_error():
+    with pytest.raises(TypeError):
+        arctan("a")
 
 
 def test_sinh1():

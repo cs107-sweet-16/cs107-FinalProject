@@ -25,6 +25,30 @@ def sin(a):
         raise TypeError
 
 
+def arcsin(a):
+    """
+    Implements sine inverse function to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through arcsin.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
+    if isinstance(a, Node):
+        return funcNode(np.arcsin, lambda x: 1 / np.sqrt(1 - x * x), None, a, None)
+    elif isinstance(a, int) or isinstance(a, float):
+        n = valNode()
+        n.set_val(np.arcsin(a))
+        return n
+    else:
+        raise TypeError
+
+
 def cos(a):
     """
     Implements cosine to contribute to a computational graph. Converts integers and floats to
@@ -49,6 +73,30 @@ def cos(a):
         raise TypeError
 
 
+def arccos(a):
+    """
+    Implements inverse cosine  function to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through arccos.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
+    if isinstance(a, Node):
+        return funcNode(np.arccos, lambda x: -1 / np.sqrt(1 - x * x), None, a, None)
+    elif isinstance(a, int) or isinstance(a, float):
+        n = valNode()
+        n.set_val(np.arccos(a))
+        return n
+    else:
+        raise TypeError
+
+
 def tan(a):
     """
     Implements tangent to contribute to a computational graph. Converts integers and floats to
@@ -68,6 +116,30 @@ def tan(a):
     elif isinstance(a, int) or isinstance(a, float):
         n = valNode()
         n.set_val(np.tan(a))
+        return n
+    else:
+        raise TypeError
+
+
+def arctan(a):
+    """
+    Implements inverse tangent  function to contribute to a computational graph. Converts integers and floats to
+    Node's, and inserts derivatives into the computational graph.
+
+    Args:
+        a (int, float, Node): Value to be calculated through arctan.
+
+    Returns:
+        Node with values and derivatives along with a corresponding computational graph.
+
+    Raises:
+        TypeError if value is not of type int, float, or Node.
+        """
+    if isinstance(a, Node):
+        return funcNode(np.arctan, lambda x: 1 / (1 + x * x), None, a, None)
+    elif isinstance(a, int) or isinstance(a, float):
+        n = valNode()
+        n.set_val(np.arctan(a))
         return n
     else:
         raise TypeError
@@ -175,7 +247,7 @@ def logistic(a):
         Node's, and inserts derivatives into the computational graph.
 
         Args:
-            a (int, float, Node): Value to be calculated through tan.
+            a (int, float, Node): Value of which we are calulating logistic.
 
         Returns:
             Node with values and derivatives along with a corresponding computational graph.
@@ -272,7 +344,7 @@ def _log_ab(arg, base=np.exp(1)):
             arg (int, float): Argument of the logarithm function.
             base (int, float): Base of the logarithm function.
         Returns:
-            Logistic value of the argument a.
+            log value of the argument arg and base base .
     """
 
     return np.log(arg) / np.log(base)
@@ -581,7 +653,6 @@ class funcNode(Node):
             rder = self.rightdf(self.left.val, self.right.val)
             lvars = self.left.reverse_pass(lder, partial * adjoint)
             rvars = self.right.reverse_pass(rder, partial * adjoint)
-            variables = dict()
             for v in rvars:
                 if v not in lvars:
                     lvars[v] = rvars[v]
@@ -658,7 +729,6 @@ def variables(name, size=None):
 
 
 if __name__ == '__main__':
-
     def func(v):
         '''
             f takes a size=3 vector and output a size=2 vector
