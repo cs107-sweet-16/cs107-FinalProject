@@ -197,7 +197,7 @@ def _logistic(a):
     """
     Helper function for logistic, implements logistic function for int or float data type.
     Args:
-        a (int, float, Node): Real number whose logistic function is to be calculated.
+        a (int, float): Real number whose logistic function is to be calculated.
 
     Returns:
         Logistic value of the argument a.
@@ -265,6 +265,16 @@ def ln(a):
 
 
 def _log_ab(arg, base=np.exp(1)):
+    """
+        Helper function for log_ab, implements logarithm function for int or float data type with arg as argument
+        of logarithm and base as the base.
+        Args:
+            arg (int, float): Argument of the logarithm function.
+            base (int, float): Base of the logarithm function.
+        Returns:
+            Logistic value of the argument a.
+    """
+
     return np.log(arg) / np.log(base)
 
 
@@ -293,6 +303,8 @@ def log_ab(a, b):
         n = valNode()
         n._set_val((np.log(a)) / np.log(b))
         return n
+    else:
+        raise TypeError
 
 
 class Node:
@@ -318,7 +330,6 @@ class Node:
     """
 
     def __init__(self):
-        # self.der = dict()
         pass
 
     def __add__(self, other):
@@ -462,8 +473,6 @@ class valNode(Node):
         super().__init__()
         self.der = 0
         self.name = name
-        # if name != None:
-        #     self.der[name]=1
 
     def _set_val(self, val):
         """
@@ -482,7 +491,10 @@ class valNode(Node):
             val(int, float): numeric value of the valNode.
 
         """
-        self._set_val(val)
+        if isinstance(val, int) or isinstance(val, float):
+            self._set_val(val)
+        else:
+            raise TypeError("The value for a variable should be 'int' or 'float'.")
 
     def __str__(self):
         """
@@ -508,15 +520,16 @@ class valNode(Node):
     def forward_pass(self):
         self.der = 0
         return self.val
-        
+
     def reverse_pass(self, partial, adjoint):
         if self.name == None:
             return dict()
-        self.der += partial*adjoint
+        self.der += partial * adjoint
         return {self.name: self}
 
     def _reset_der(self):
         self.der = 0
+
 
 class funcNode(Node):
     def __init__(self, func, leftdf, rightdf, left, right):
@@ -561,134 +574,116 @@ class funcNode(Node):
         else:
             self.val = self.func(self.left.forward_pass())
         return self.val
-    
+
     def reverse_pass(self, partial, adjoint):
-        if self.right != None: 
+        if self.right != None:
             lder = self.leftdf(self.left.val, self.right.val)
             rder = self.rightdf(self.left.val, self.right.val)
-            lvars = self.left.reverse_pass(lder, partial*adjoint)
-            rvars = self.right.reverse_pass(rder, partial*adjoint)
+            lvars = self.left.reverse_pass(lder, partial * adjoint)
+            rvars = self.right.reverse_pass(rder, partial * adjoint)
             variables = dict()
             for v in rvars:
                 if v not in lvars:
                     lvars[v] = rvars[v]
         else:
             lder = self.leftdf(self.left.val)
-            lvars = self.left.reverse_pass(lder, partial*adjoint) 
-            
+            lvars = self.left.reverse_pass(lder, partial * adjoint)
+
         return lvars
-        # return self.val
-    
+
     def reverse(self):
         self.forward_pass()
-        variables = self.reverse_pass(1,1)
-        der = { v: node.der for v, node in variables.items() }
+        variables = self.reverse_pass(1, 1)
+        der = {v: node.der for v, node in variables.items()}
         return self.val, der
-    
-    
+
+
 class vector:
     def __init__(self, *args):
         self.size = len(args)
         self.elements = args
-    
+
     def set_val(self, array):
         if len(array) != self.size:
             raise ValueError(f"Input size has a mismatch with the vector size ({self.size})")
         for node, val in zip(self.elements, array):
-            # print(val)
             node.set_val(val)
 
     def __getitem__(self, key):
         return self.elements[key]
-        
+
     def __iter__(self, key):
         return iter(self.elements)
-    
+
     def grad(self, var):
-        '''
+        """
             auto-diff for vector functions
             currently we only use reverse mode to calculate gradient for vector functions
             input: the variable or vector variables var, which is used to
              define the function and for which we need to calculate the derivatives
             return: Jacobian matrix
-        '''
+        """
         der_array = []
         var._reset_der()
         for f in self.elements:
             f.forward_pass()
-            f.reverse_pass(1,1)
+            f.reverse_pass(1, 1)
             der_array.append(var.der)
             var._reset_der()
         return der_array
-    
+
     def evaluate(self):
-        '''
+        """
             evaluation for vector functions
-        '''
-        return [ f.forward_pass() for f in self.elements ]        
-    
+        """
+        return [f.forward_pass() for f in self.elements]
+
     @property
     def der(self):
-        return [ node.der for node in self.elements ]
-    
+        return [node.der for node in self.elements]
+
     def _reset_der(self):
-        '''
+        """
            this function only works if it is a variable vector
-        '''
+        """
         for node in self.elements:
             node.der = 0
-    
-def variables(name, size = None):
-    if size == None or size == 1:
+
+
+def variables(name, size=None):
+    if (size is None) or (size == 1):
         return valNode(name)
-    elems = [ valNode(name+'___'+str(i)) for i in range(size) ]
+    elems = [valNode(name + '___' + str(i)) for i in range(size)]
     return vector(*elems)
 
-    
-
-            
 
 if __name__ == '__main__':
-    # v = vector([1,2,3])
 
-    # example to define scalar function with multiple input variables
-
-    x = variables('x')
-    y = variables('y')
-    f = sin(ln(x))+tan(x*x+y*x+x*x*x*y)
-    x.set_val(2)
-    y.set_val(3)
-    print(f.forward())
-    print(f.reverse())
-    
-    # example to define vector function with vectorized input variables
-    
-    v = variables('v', 2)
-    v.set_val([2,3])    
-    print(v.evaluate())
-    print(v.grad(v))
     def func(v):
         '''
             f takes a size=3 vector and output a size=2 vector
         '''
-        f1 = sin(ln(v[0]))+tan(v[0]**2+v[0]*v[1]+v[0]**3*v[1])
-        f2 = v[0]*v[1]+v[1]**2+sqrt(v[0])
-        return vector(f1,f2)
+        f1 = sin(ln(v[0])) + tan(v[0] ** 2 + v[0] * v[1] + v[0] ** 3 * v[1])
+        f2 = v[0] * v[1] + v[1] ** 2 + sqrt(v[0])
+        return vector(f1, f2)
+
+
     f = func(v)
     print(f.evaluate())
     print(f.grad(v))
-        
-        
+
+
     # vector function can also take a scalar input variable
     def func1(x):
-        f1 = x**2
-        f2 = x**3
+        f1 = x ** 2
+        f2 = x ** 3
         return vector(f1, f2)
-    
+
+
     f = func1(x)
     print(f.evaluate())
     print(f.grad(x))
-        
+
     '''x.der = 0
     y.der = 0
     f = log(sin(exp(x)+y)) + exp(y) + x

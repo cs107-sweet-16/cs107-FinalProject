@@ -4,7 +4,8 @@ import os
 import numpy as np
 
 # sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
-from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
+from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode, \
+    vector, variables
 
 
 def test_pos():
@@ -109,7 +110,6 @@ def test_rsub_float():
         assert np.isclose(f_grad[var], actual_f_grad[var])
 
 
-# Anna's addition:
 def test_cos_log():
     print("testing cos(ab/c) + c*log(a)")
     a = valNode('a')
@@ -365,7 +365,6 @@ def test_cos_log_multivar():
         assert np.isclose(f_grad[var], actual_f_grad[var])
 
 
-# original tests:
 def test_sin_multivar():
     print("testing: sin(ab + b) + c^a")
     a = valNode('a')
@@ -396,14 +395,12 @@ def test_sin_multivar():
 
 
 def test_sin_multivar_2():
-    # print("testing: sin(ab + b)")
     a = valNode('a')
     b = valNode('b')
     f = sin(a * b + b)
     a._set_val(2)
     b._set_val(5)
-    # print(f)
-    # print(f.forward())
+
     f_val, f_grad = f.forward()
 
     actual_f_val = np.sin(a.val * b.val + b.val)
@@ -412,7 +409,6 @@ def test_sin_multivar_2():
         'b': (a.val + 1) * np.cos((a.val + 1) * b.val)
     }
 
-    # TODO this is for forward mode - move to different test file
     assert np.isclose(f_val, actual_f_val)
 
     for var in f_grad:
@@ -420,7 +416,6 @@ def test_sin_multivar_2():
     #
 
     f.forward()
-    # print(f.val, )
     f.reverse()
     reverse_grads = {
         'a': a.der,
@@ -441,7 +436,6 @@ def test_exp_multivar():
     c._set_val(np.pi)
 
     actual_f_val = np.exp(a.val / c.val) + b.val
-    # print(np.exp(a.val / c.val), np.arccos(np.exp(a.val / c.val)))
 
     actual_f_grad = {
         'a': (np.exp(a.val / c.val)) / (c.val),
@@ -450,7 +444,6 @@ def test_exp_multivar():
     }
 
     f.forward()
-    # print(f.val, )
     f.reverse()
     reverse_grads = {
         'a': a.der,
@@ -515,7 +508,6 @@ def test_log_multivar():
     }
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
-        # print(actual_f_grad[var], reverse_grads[var])
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
@@ -559,7 +551,6 @@ def test_pow_div_multivar():
     }
     assert f.val == actual_f_val
     for var in actual_f_grad.keys():
-        # print(actual_f_grad[var], reverse_grads[var])
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
@@ -595,10 +586,7 @@ def test_logistic_const():
 
 def test_logistic_type_error():
     with pytest.raises(TypeError):
-        a = valNode('a')
-        a._set_val("2")
-        f = logistic(a)
-        f.forward()
+        logistic("a")
 
 
 def test_log_ab_both_nodes():
@@ -683,14 +671,29 @@ def test_log_ab_base_arg_int():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
 
 
-def test_log_ab_type_error():
+def test_log_ab_type_error1():
     with pytest.raises(TypeError):
-        a = valNode('a')
-        a._set_val("2")
-        b = valNode("b")
-        b._set_val(4)
-        f = log_ab(a, b)
-        f.forward()
+        log_ab("a", 2)
+
+
+def test_log_ab_type_error2():
+    with pytest.raises(TypeError):
+        log_ab(1, "2")
+
+
+def test_log_ab_type_error2():
+    with pytest.raises(TypeError):
+        a = valNode("a")
+        a.set_val(2)
+        log_ab(a, "2")
+
+
+def test_log_ab_type_error2():
+    with pytest.raises(TypeError):
+        a = valNode("a")
+        a.set_val(2)
+        log_ab("2", a)
+
 
 
 def test_sinh1():
@@ -756,10 +759,7 @@ def test_sinh_const():
 
 def test_sinh_type_error():
     with pytest.raises(TypeError):
-        a = valNode('a')
-        a._set_val("2")
-        f = sinh(a)
-        f.forward()
+        sinh("a")
 
 
 def test_cosh1():
@@ -825,10 +825,7 @@ def test_cosh_const():
 
 def test_cosh_type_error():
     with pytest.raises(TypeError):
-        a = valNode('a')
-        a._set_val("2")
-        f = cosh(a)
-        f.forward()
+        cosh("a")
 
 
 def test_tanh1():
@@ -894,10 +891,7 @@ def test_tanh_const():
 
 def test_tanh_type_error():
     with pytest.raises(TypeError):
-        a = valNode('a')
-        a._set_val("2")
-        f = tanh(a)
-        f.forward()
+        tanh("a")
 
 
 def test_sqrt():
@@ -935,10 +929,7 @@ def test_sqrt_const():
 
 def test_sqrt_type_error():
     with pytest.raises(TypeError):
-        a = valNode('a')
-        a._set_val("2")
-        f = sinh(a)
-        f.forward()
+        sqrt("a")
 
 
 def test_chain_rule():
@@ -1008,3 +999,87 @@ def test_complex_func2():
     }
     for var in actual_f_grad.keys():
         assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_variables():
+    a = variables('a')
+    b = variables('b')
+    a.set_val(2)
+    b.set_val(3)
+    f = (a + b) ** 2 + log(a) * sin(b)
+    f.forward()
+    f.reverse()
+    actual_f_val = (a.val + b.val) ** 2 + np.sin(b.val) * np.log(a.val)
+    assert f.val == actual_f_val
+    actual_f_grad = {
+        'a': 2 * (a.val + b.val) + np.sin(b.val) / a.val,
+        'b': 2 * (a.val + b.val) + np.log(a.val) * np.cos(b.val)
+    }
+    reverse_grads = {
+        'a': a.der,
+        'b': b.der,
+    }
+    for var in actual_f_grad.keys():
+        assert np.isclose(actual_f_grad[var], reverse_grads[var])
+
+
+def test_vector_value_error():
+    with pytest.raises(ValueError):
+        v = variables('v', 2)
+        v.set_val([2, 3, 5])
+
+
+def test_vector_func_vector_input():
+    v = variables('v', 2)
+    v.set_val([2, 3])
+
+    def func(v):
+        """
+            f takes a size=3 vector and output a size=2 vector
+        """
+        f1 = (v[0] + v[1]) ** 2 + log(v[0]) * sin(v[1])
+        f2 = sin(tan(v[0]) / log(v[1]))
+        return vector(f1, f2)
+
+    f = func(v)
+    res = f.evaluate()
+    assert np.isclose((v[0].val + v[1].val) ** 2 + np.sin(v[1].val) * np.log(v[0].val), res[0])
+    assert np.isclose((np.sin(np.tan(v[0].val) / np.log(v[1].val))), res[1])
+    der_arr = f.grad(v)
+    assert np.isclose(2 * (v[0].val + v[1].val) + np.sin(v[1].val) / v[0].val, der_arr[0][0])
+    assert np.isclose(2 * (v[0].val + v[1].val) + np.log(v[0].val) * np.cos(v[1].val), der_arr[0][1])
+    assert np.isclose(((np.cos(v[0].val)) ** (-2)) * (np.cos(np.tan(v[0].val) / np.log(v[1].val))
+                                                      ) * 1 / np.log(v[1].val), der_arr[1][0])
+    assert np.isclose(-1 * np.tan(v[0].val) * np.cos(np.tan(v[0].val) / np.log(v[1].val)) * (1 / v[1].val) * (
+            (np.log(v[1].val)) ** (-2)), der_arr[1][1])
+
+
+def test_vec_func_scalar_input():
+    v = variables('v', 1)
+    v.set_val(2)
+
+    def func1(x):
+        f1 = x ** 2
+        f2 = x ** 3
+        return vector(f1, f2)
+
+    f = func1(v)
+    res = f.evaluate()
+    assert np.isclose(res[0], 4)
+    assert np.isclose(res[1], 8)
+    der_arr = f.grad(v)
+    print(der_arr, res)
+    assert np.isclose(der_arr[0], 4)
+    assert np.isclose(der_arr[1], 12)
+
+
+def test_vec_func_type_error1():
+    with pytest.raises(TypeError):
+        v = variables('v', 1)
+        v.set_val([2])
+
+
+def test_set_val_type_error():
+    with pytest.raises(TypeError):
+        v = valNode('v')
+        v.set_val("2")
