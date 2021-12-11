@@ -159,7 +159,7 @@ def test_cos_const():
     f = cos(3)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.cos(3))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
     f = cos(3.1)
     f_val, f_grad = f.forward()
