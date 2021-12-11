@@ -581,7 +581,6 @@ class funcNode(Node):
             rder = self.rightdf(self.left.val, self.right.val)
             lvars = self.left.reverse_pass(lder, partial * adjoint)
             rvars = self.right.reverse_pass(rder, partial * adjoint)
-            variables = dict()
             for v in rvars:
                 if v not in lvars:
                     lvars[v] = rvars[v]
