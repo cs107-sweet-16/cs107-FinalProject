@@ -8,7 +8,7 @@ contain the root `toctree` directive. -->
 
 * node module
 * Dualnumber module
-* Operatorsfunc modeul
+* Operatorsfunc module
 
 
 # Introduction
@@ -33,10 +33,10 @@ AD mainly makes use of two properties of closed-form functions:
 elementary functions, and the analytical expressions of the derivatives of
 elementary functions are already-known.
 2. Derivative rules including sum rule, product rule, quotient rule and most importantly, the chain rule.
-- sum rule: (f+g)’ = f’+g’
-- product rule: (f\*g)’ = f’g+g’f\*g
-- quotient rule: (f/g)’ = (f’g-g’f)/(g×g)
-- chain rule: h = f(g(•)), then h’ = f’(g(•))× g’(•)
+- sum rule: $(f+g)' = f'+g'$
+- product rule: $(fg)’ = f’g+g’f$
+- quotient rule: $(f/g)’ = (f'g-g'f)/(g^2)$
+- chain rule: $h = f(g(x))$, then $h' = f'(g(x))g'(x)$
 
 To evaluate the value of a complicated function expression, we need to start with
 independent variables and evaluate a series of intermediate results and finally
@@ -50,11 +50,12 @@ derivative rules following the flow of the computation graph.
 
 Here we give a brief example to illustrate how we calculate derivatives 
 based on compution graph. If we want to evaluate the derivative with respect 
-to x1 at x1=pi/2 for function f=sin(cos(x1)), here is our computation graph
+to x1 at x1=pi/2 for the function $f=sin(cos(x1))$, here is our computation graph
 
 ![comp graph](fig1.png)
 
 Then we follow the graph and evaluate step by step:
+
 |step| trace | Elementary function |Current value | Elementary function derivative| $\nabla_x$ value|
 |--|--|--|--|-- |--|
 |1|v0|x|pi/2|$\dot x$|1|
@@ -67,17 +68,11 @@ Note that when we calculate "elementary function derivative", we made use of the
 
 ## Installation
 
-### Option 1:
+### Option 1 (user):
 
-#
-### Distribution 
-We will used PyPI to distribute our package.   
-We will used a library called `twine` to help us package and distribute our
-package over PyPI. We will follow this helpful tutorial
-https://packaging.python.org/tutorials/packaging-projects/, provides a detailed
-guide on how to setup the structure. Using a framework may be helpful,
-but in an effort to reduce software overhead and maximize learning for each
-step, we will elect to forgo a framework. Users may install autodiff (?? is this the name) through the following command line:
+We used PyPI to distribute our package.   Users who wish to perform derivative
+computations may install our autodiff package through the following command
+line operations:
 
 ```
 pip3 install autodiff--aabj
@@ -95,7 +90,7 @@ Alternatively, to pull commmon functions directly you may use the following impo
 from autodiff.node import sin, cos, tan, exp, ln, log, sinh, cosh, tanh, sqrt, logistic, log_ab, valNode
 ```
 
-### Option 2:
+### Option 2 (developer):
 
 In adition to pip installation, you may clone directly from the repository:
 
@@ -110,29 +105,40 @@ cd cs107-FinalProject
 pip3 install -r requirements.txt
 ```
 
-Finally, finish by importing dualnumber and it’s operators
+Finally, finish by importing dualnumber and its operators
 
 ```
 import numpy as np
-from node import sin, cos, tan, exp, log, valNode
+from autodiff.node import sin, cos, tan, exp, log, valNode
 ```
 ## Interaction
 
-Autodiff executes auto-differntiation by utilizting the concept of a computational graph. This graph is constructed during the execution of a forward pass. Simultaneously, the final value, and the respective gradient of each variable are also computed. Forward mode may be passed on some simple user-defined function, e.g. $$ f = 3x + 5^y $$. The computational graph is constructed via Python's native operator precedence and an ordered dictionaries. As each step is executed per Python's operator precedence, the respective values and derivatives are stored within the dictionary. The code for this may be found under the directory `autodiff/`
+Autodiff executes auto-differentiation by utilizting the concept of a
+computational graph. This graph is constructed during the execution of a
+forward pass. Simultaneously, the final value, and the respective gradient of
+each variable are also computed. 
 
-### Forward Mode Example
+The computational graph is constructed via Python's native operator precedence and an ordered
+dictionaries. As each step is executed per Python's operator precedence, the
+respective values and derivatives are stored within the dictionary. The code
+for this may be found under the directory `autodiff/`
+
+### Full Forward/Reverse mode examples
 
 The general workflow for this project consists of the following:
 1. Determining some function of interest
 2. Initializing each unique variable 
 3. Defining the function
 4. Setting the variable values
-5. Executing forward mode
-6. Executing reverse pass
+5. Executing forward mode/reverse mode
 
-It is important to note that may of these steps must be defined in order. Particularly the following two considerations:
-1. The variables must be set as nodes prior to function definition. This ensures that as the function is execute the values will be simultaneously calculated and the computational graph will be constructed.
-2. Forward mode is executed prior to reverse mode. For reverse() to be completed, the gradients at each node and the final gradient must be computed beforehand, through forward(). Otherwise, reverse() fails.
+It is important to note that may of these steps must be defined in order.
+Particularly the following two considerations:
+1. The variables must be set as nodes prior to function definition. This
+   ensures that as the function is execute the values will be simultaneously
+   calculated and the computational graph will be constructed.
+2. AFter the values for each variable set, forward mode or reverse may be executed. 
+   Under the hood, reverse mode makes a forward pass to compute the values at each node.
 
 ```py
   # testing cos(ab/c) + c*log(a), a = 4, b = -1, c = 10
@@ -151,12 +157,11 @@ It is important to note that may of these steps must be defined in order. Partic
   # execute forward:
   f_val, f_grad = f.forward()
 
-
  # print the values of interest:
  print("value of function f: ", f_val)
- print("gradient with respect to a: ", f_grad[a])
- print("gradient with respect to b: ", f_grad[b])
- print("gradient with respect to c: ", f_grad[c])
+ print("gradient with respect to a: ", f_grad['a'])
+ print("gradient with respect to b: ", f_grad['b'])
+ print("gradient with respect to c: ", f_grad['c'])
 
 ```
 
@@ -175,19 +180,24 @@ It is important to note that may of these steps must be defined in order. Partic
   f = a**2 + 3**a + 5/a + a/2
 
  # execute forward pass
-  f.forward_pass()
-  f_val, f_grad = f.reverse(1, 1)
+ f_val, f_grad = f.reverse()
 
  # print the values of interest:
  print("value of function f: ", f_val)
- print("gradient at of a (1,1): ", f_der)
+ print("gradient with respect to a: ", f_grad['a'])
 ```
 
-### Simple Usage
+### Simple Forward Mode Usage
 
-In addition to our node.py file, which contains code for forward and reverse passes on a given function, we also have more rudimentary code that constructs dual numbers and conducts a forward pass. These files are: `Dualnumber.py` and `Operatorsfunc.py`. Both of which can be found along within the `autodiff/` diretory.
+In addition to our node.py file, which contains code for forward and reverse
+passes on a given function, we also have more rudimentary code that constructs
+dual numbers and conducts a forward pass. These files are: `Dualnumber.py` and
+`Operatorsfunc.py`. Both of which can be found along within the `autodiff/`
+diretory.
 
-This code is similar to the previous code, except there is no reverse pass available, and the forward pass executes automatically when a function is passed. Examples below:
+This code is similar to the previous code, except there is no reverse pass
+available, and the forward pass executes automatically when the value for a variable is set.
+Examples below:
 
 ```py
 # set dual number 'x'
@@ -208,7 +218,7 @@ print(f.der) # should equal approx -344.76791290283
 ## Software Organization
 
 ### Directory Structure
-Our code will live in a separate folder called `src`. We will have a separate
+Our code will live in a separate folder called `autodiff`. We will have a separate
 directory, `test`, for our tests. Finally, while not necessarily code, our
 documentation will live in a directory named `docs`, which will go into
 technical detail how each user-facing function is used, and any examples if
@@ -238,7 +248,7 @@ CS107-FinalProject/
 ### Modules
 
 We will have one package, named `autodiff`. Within this module there are a
-few modules, with the most core functionality in a module named `node.py`.  This
+few modules, with the core functionality in a module named `node.py`.  This
 module will provides us with the basic functionality of being able to
 differentiate on a defined set of elementary operations and functions. 
 
@@ -309,9 +319,11 @@ We will maintain an updated list of these operations:
 * neg: standard unary negative operation
 * pos: standard unary positive operation
 
-## Dependendies
+## Dependencies
 
-Our primary dependency within our working modules is `numpy`. `Numpy` was used to calculate values for non-native elementary functions, such as the sinusoidal classes. However we used numerous packages throughout our project. These include PyPi to form our project into a package, and codecove to determine code coverage.
+Our primary dependency within our working modules is `numpy`. `Numpy` was used
+to calculate values for non-native elementary functions, such as the sinusoidal
+classes. 
 
 
 
