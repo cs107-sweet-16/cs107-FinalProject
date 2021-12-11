@@ -75,13 +75,13 @@ computations may install our autodiff package through the following command
 line operations:
 
 ```
-pip3 install autodiff--aabj
+pip3 install autodiff-aabj
 ```
 
 Within a python terminal, you can then import the package:
 
 ```
-import autodiff as autodiff
+import autodiff
 ```
 
 Alternatively, to pull commmon functions directly you may use the following import statement:
