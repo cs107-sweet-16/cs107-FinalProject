@@ -148,6 +148,8 @@ Executes a forward pass of the function, without a computational graph.
 
 #### reverse(partial, adjoint)
 
+
+
 ### node.ln(a)
 Implements the natural logarithm to calculate values, derivative, and to contribute to a computational graph. Converts integers and floats to
 Node’s, and inserts derivatives into the computational graph.
@@ -182,9 +184,50 @@ Alias for ln(a).
 
 
 ### node.log_ab(a, b)
-Returns logarithm of a with base b.
+Implements the logarithm with arbitrary base b for argument a to calculate values,
+derivative, and to contribute to a computational graph. Converts integers and floats to 
+Node's, and inserts derivatives into the computational graph.
+
+* **Parameters**
+
+    **a** (*int**, **float**, **Node*) – The Argument of logarithm.
+
+    **b** (*int**, **float**, **Node*) – The Base of logarithm.
+
+
+* **Returns**
+
+    Node with values and derivatives along with a corresponding computational graph.
+    
+    
+* **Raises**
+
+    **TypeError if value is not of type int****, ****float****, or ****Node.** – 
+    
+    
 
 ### node.logistic(a)
+Implements logistic to contribute to a computational graph. Converts integers and floats to
+Node’s, and inserts derivatives into the computational graph.
+
+
+* **Parameters**
+
+    **a** (*int**, **float**, **Node*) – Value at which logistic function is to be calculated.
+
+
+
+* **Returns**
+
+    Node with values and derivatives along with a corresponding computational graph.
+
+
+
+* **Raises**
+
+    **TypeError if value is not of type int****, ****float****, or ****Node.** – 
+    
+
 
 ### node.sin(a)
 Implements sine to contribute to a computational graph. Converts integers and floats to
