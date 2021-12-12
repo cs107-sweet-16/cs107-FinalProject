@@ -383,13 +383,11 @@ class Node:
     """
     Node class that implements the following native python functions: addition, subtraction, multipliation,
     division, unary operators, and power. Depending on the implemented funtions, Node will check if the inputs
-    are of type integer, float, or Node. If they are of tyep Node, then the value and it's derivative is computed
-    and stored in a dictionary. If the values are of type int or float, then the values are first convered to Node
-    class by calling valNode.
+    are of type integer, float, or Node. If they are of tyep Node, then a new Node will be generated to be the
+    parent of inputs and be returned. If the values are of type int or float, then the values are first convered
+    to Node class by calling valNode, and be operated in the same way as when the inputs are of type Node.
 
     Attributes:
-        val (int, float): Current value of the variable.
-        der (int, float): Derivative of variable.
         add: Addition implementation for Node class.
         sub: Subtraction implementation for Node class.
         mul: Multiplication implementation for Node class.
@@ -537,8 +535,12 @@ class Node:
 class valNode(Node):
     """
     Sets variables as valNode class, which allows the users to auto-differentiate functions that use them. valNode class
-    overrides native python functions and unary operators, in order to construct a sequential computational graph. Sets
-    the initial derivative (0) for each assigned variable.
+    overrides native python functions and unary operators, in order to construct a sequential computational graph.
+
+    Attributes:
+        val (int, float): Current value of the variable.
+        name (str): The name of the variable.
+        der (int, float): Derivative of variable, which is used in the reverse mode.
     """
 
     def __init__(self, name=None):
@@ -582,11 +584,11 @@ class valNode(Node):
         Executes a simple forward pass for a single node.
 
         Returns:
-            Current value and empty derivative if number. Otherwise returns the value of the specified valNode and
-            empty dictionary.
+            Current value and empty derivative if no name. Otherwise returns the value of the specified valNode and
+            derivative 1.
         """
         if self.name is None:
-            return self.val, {self.name: 0}
+            return self.val, {}
         return self.val, {self.name: 1}
 
     def forward_pass(self):
@@ -604,6 +606,25 @@ class valNode(Node):
 
 
 class funcNode(Node):
+    """
+    Sets intermediate variables as funcNode class to memorize the functions needed to represent the final output 
+    function. funcNode class overrides native python functions and unary operators, in order to construct a 
+    sequential computational graph, based on which the users can auto-differentiate the functions they are interested
+    in.
+
+    Attributes:
+        val (int, float): Current value of the intermediate variable.
+        func (callable): The arithmetic function executed to calculate the intermediate variable.
+        leftdf (callable): The arithmetic function to calculate the partial derivative of the current node 
+        with respect to its left child.
+        rightdf (callable): The arithmetic function to calculate the partial derivative of the current node 
+        with respect to its right child.
+        left (Node): Left child of the node.
+        right (Node): Right child of the node.
+
+
+    """
+
     def __init__(self, func, leftdf, rightdf, left, right):
         super().__init__()
         self.func = func
@@ -619,6 +640,17 @@ class funcNode(Node):
                '\n|\n|-(R)->' + '\n|      '.join(str(self.right).split('\n'))
 
     def forward(self):
+        """
+            calculate function value and derivatives with forward mode.
+            Args:
+                self (Node): The current node.
+
+            Returns:
+                val (float): The value of the function
+                der (dict): The dictionary containing all the partial derivatives of the functions with 
+                variable names as keys.
+
+        """    
         if self.right != None:
             aval, ader = self.left.forward()
             bval, bder = self.right.forward()
@@ -663,6 +695,17 @@ class funcNode(Node):
         return lvars
 
     def reverse(self):
+        """
+            calculate function value and derivatives with reverse mode.
+            Args:
+                self (Node): The current node.
+
+            Returns:
+                val (float): The value of the function
+                der (dict): The dictionary containing all the partial derivatives of the functions with 
+                variable names as keys.
+
+        """    
         self.forward_pass()
         variables = self.reverse_pass(1, 1)
         der = {v: node.der for v, node in variables.items()}
@@ -670,11 +713,28 @@ class funcNode(Node):
 
 
 class vector:
+    """
+        Combines several valNodes together to support vectorized input variables. vector and valNode share
+        the same syntaxes for .set_val, .der and ._reset_der. Every single element in the vector variable 
+        can be indexed.
+    """
+    
     def __init__(self, *args):
         self.size = len(args)
         self.elements = args
 
     def set_val(self, array):
+        """
+            set the value of the vector variable.
+            Args:
+                array (list): A list of value to be set for the vector.
+
+            Returns:
+                None
+
+            Raises:
+                ValueError if the input size does not match the vector size.
+        """
         if len(array) != self.size:
             raise ValueError(f"Input size has a mismatch with the vector size ({self.size})")
         for node, val in zip(self.elements, array):
@@ -690,9 +750,10 @@ class vector:
         """
             auto-diff for vector functions
             currently we only use reverse mode to calculate gradient for vector functions
-            input: the variable or vector variables var, which is used to
-             define the function and for which we need to calculate the derivatives
-            return: Jacobian matrix
+            Args: 
+                the variable or vector variables var, which is used to define the function 
+                and for which we need to calculate the derivatives
+            Return: Jacobian matrix
         """
         der_array = []
         var._reset_der()
@@ -706,6 +767,7 @@ class vector:
     def evaluate(self):
         """
             evaluation for vector functions
+            Return: The vector values of the vector function.
         """
         return [f.forward_pass() for f in self.elements]
 
@@ -722,6 +784,17 @@ class vector:
 
 
 def variables(name, size=None):
+    """
+        initialize independent variables for the function of interest
+        
+        Args:
+            name (str): The name to identify the variable.
+            size (int): The size of the variable.
+
+        Returns:
+            vector when size > 1
+            valNode when size = 1 or None
+    """
     if (size is None) or (size == 1):
         return valNode(name)
     elems = [valNode(name + '___' + str(i)) for i in range(size)]
@@ -729,10 +802,8 @@ def variables(name, size=None):
 
 
 if __name__ == '__main__':
-    def func(v):
-        '''
-            f takes a size=3 vector and output a size=2 vector
-        '''
+    def func(v):    
+        # f takes a size=3 vector and output a size=2 vector
         f1 = sin(ln(v[0])) + tan(v[0] ** 2 + v[0] * v[1] + v[0] ** 3 * v[1])
         f2 = v[0] * v[1] + v[1] ** 2 + sqrt(v[0])
         return vector(f1, f2)
@@ -753,85 +824,3 @@ if __name__ == '__main__':
     f = func1(x)
     print(f.evaluate())
     print(f.grad(x))
-
-    '''x.der = 0
-    y.der = 0
-    f = log(sin(exp(x)+y)) + exp(y) + x
-    x._set_val(0)
-    y._set_val(1)
-    print(f.forward())
-    f.forward_pass()
-    f.reverse(1,1)
-    print(f.val, x.der, y.der)
-    
-    x.der = 0
-    y.der = 0
-    f = log(sin(x+y)**2)+exp(x**2+y**2)
-    print(f)
-    x._set_val(1)
-    y._set_val(2)
-    print(f.forward())
-    f.forward_pass()
-    f.reverse(1,1)
-    print(f.val, x.der, y.der)
-    
-    print("testing: sin(ab + b)")
-    a = valNode('a')
-    b = valNode('b')
-    f = sin(a * b + b)
-    a._set_val(2)
-    b._set_val(5)
-    # print(f)
-    # print(f.forward())
-    f_val, f_grad = f.forward()
-
-    actual_f_val = np.sin(a.val * b.val + b.val)
-    actual_f_grad = {
-        'a': b.val * np.cos((a.val + 1) * b.val),
-        'b': (a.val + 1) * np.cos((a.val + 1) * b.val)
-    }
-
-    assert np.isclose(f_val, actual_f_val)
-
-    for var in f_grad:
-        assert np.isclose(f_grad[var], actual_f_grad[var])
-
-    f.forward_pass()
-    # print(f.val, )
-    f.reverse(1, 1)
-    reverse_grads = {
-        'a': a.der,
-        'b': b.der
-    }
-    for var in f_grad:
-        assert np.isclose(f_grad[var], reverse_grads[var])
-
-    print("testing: e^(a/c) + b")
-    a = valNode('a')
-    b = valNode('b')
-    c = valNode('c')
-    f = exp(a / c) + b
-    a._set_val(np.pi / 2)
-    b._set_val(np.pi / 3)
-    c._set_val(np.pi)
-
-    actual_f_val = np.exp(a.val / c.val) + b.val
-    # print(np.exp(a.val / c.val), np.arccos(np.exp(a.val / c.val)))
-
-    actual_f_grad = {
-        'a': (np.exp(a.val / c.val)) / (c.val),
-        'b': 1,
-        'c': -(a.val * np.exp(a.val / c.val)) / (c.val ** 2),
-    }
-
-    f.forward_pass()
-    # print(f.val, )
-    f.reverse(1, 1)
-    reverse_grads = {
-        'a': a.der,
-        'b': b.der,
-        'c': c.der,
-    }
-
-    for var in actual_f_grad.keys():
-        assert np.isclose(actual_f_grad[var], reverse_grads[var])'''

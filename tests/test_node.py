@@ -159,12 +159,12 @@ def test_cos_const():
     f = cos(3)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.cos(3))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
     f = cos(3.1)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.cos(3.1))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_cos_type_error():
@@ -198,12 +198,12 @@ def test_sin_const():
     f = sin(3)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.sin(3))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
     f = sin(3.1)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.sin(3.1))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_sin_type_error():
@@ -237,12 +237,12 @@ def test_tan_const():
     f = tan(3)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.tan(3))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
     f = tan(3.1)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.tan(3.1))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_tan_type_error():
@@ -292,12 +292,12 @@ def test_exp_const():
     f = exp(3)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.exp(3))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
     f = exp(3.1)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.exp(3.1))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_exp_type_error():
@@ -329,12 +329,12 @@ def test_log_const():
     f = ln(10)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.log(10))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
     f = ln(10.1)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.log(10.1))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_log_type_error():
@@ -581,7 +581,7 @@ def test_logistic_const():
     f = logistic(10)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, 0.5 * (1 + np.tanh(0.5 * 10)))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_logistic_type_error():
@@ -728,7 +728,7 @@ def test_arcsin_const():
     f = arcsin(0)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.arcsin(0))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_arcsin_type_error():
@@ -769,7 +769,7 @@ def test_arccos_const():
     f = arccos(0)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.arccos(0))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_arccos_type_error():
@@ -810,7 +810,7 @@ def test_arctan_const():
     f = arctan(1)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.arctan(1))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_arctan_type_error():
@@ -876,7 +876,7 @@ def test_sinh_const():
     f = sinh(10)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.sinh(10))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_sinh_type_error():
@@ -942,7 +942,7 @@ def test_cosh_const():
     f = cosh(10)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.cosh(10))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_cosh_type_error():
@@ -1008,7 +1008,7 @@ def test_tanh_const():
     f = tanh(10)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.tanh(10))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_tanh_type_error():
@@ -1046,7 +1046,7 @@ def test_sqrt_const():
     f = sqrt(10)
     f_val, f_grad = f.forward()
     assert np.isclose(f_val, np.sqrt(10))
-    assert np.isclose(f_grad[None], 0)
+    assert len(f_grad)==0
 
 
 def test_sqrt_type_error():
